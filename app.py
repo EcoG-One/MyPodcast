@@ -16,9 +16,26 @@ db = SQLAlchemy(app)
 
 # SQLAlchemy Models
 class User(db.Model):
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
+
+class Podcast(db.Model):
+    __tablename__ = 'podcasts'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(80), unique=True, nullable=False)
+    podcast_url = db.Column(db.String(200), nullable=False)
+
+class PodcastsPerUser(db.Model):
+    __tablename__ = 'podcasts_per_user'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
+    podcast_id = db.Column(db.Integer, db.ForeignKey('podcasts.id'), unique=True, nullable=False)
+
+# Relationships
+    user = db.relationship('User', backref=db.backref('podcasts', lazy=True))
+    podcast = db.relationship('Podcast', backref=db.backref('users', lazy=True))
 
 
 def init_db():
