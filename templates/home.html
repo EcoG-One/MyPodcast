@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+{% with messages = get_flashed_messages()%}
+{% if messages%}
+    {% for message in messages%}
+    <p>{{message}}</p>
+    {%endfor%}
+    {%endif%}
+    {%endwith%}
+    <h1>Welcome!</h1>
+    <a href='/login'>Login</a> or <a href='/register'>Register</a>
+</body>
+</html>

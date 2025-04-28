@@ -8,9 +8,13 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 
-# Database setup
+
 def init_db():
-    conn = sqlite3.connect('data/users.db')
+    """
+    Database setup
+    Connects to db and creates db tables if they don't exist
+    """
+    conn = sqlite3.connect('data/podcasts.db')
     c = conn.cursor()
     c.execute('''
         CREATE TABLE IF NOT EXISTS users (
@@ -22,23 +26,49 @@ def init_db():
     conn.commit()
     conn.close()
 
-# Route: Home
+
 @app.route('/')
 def home():
+    """
+    Route: Home
+    Checks if user has logged in
+    :return: Rendered HTML template for the home page
+     or redirects to login/register page
+    """
     if 'username' in session:
-        return f"Hello, {session['username']}! <a href='/logout'>Logout</a>"
-    return "Welcome! <a href='/login'>Login</a> or <a href='/register'>Register</a>"
+        return redirect(url_for('welcome'))
+    return render_template('home.html')
 
-# Route: Register
+
+@app.route('/welcome', methods=['GET', 'POST'])
+def welcome():
+    """
+    Route: welcome
+    Inputs the Podcast topic
+    :return:
+    """
+    if request.method == 'POST':
+        topic = request.form['topic']
+        print(topic)
+
+    return render_template('welcome.html')
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    """
+    Route: Register
+    Registers a new user
+    :return: Rendered HTML template for the register page
+     and after registration redirects to login page
+    """
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         hashed_password = generate_password_hash(password, method='scrypt', salt_length=16)
 
         try:
-            conn = sqlite3.connect('data/users.db')
+            conn = sqlite3.connect('data/podcasts.db')
             c = conn.cursor()
             c.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, hashed_password))
             conn.commit()
@@ -50,14 +80,19 @@ def register():
 
     return render_template('register.html')
 
-# Route: Login
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Route: Login
+    :return: Rendered HTML template for the login page
+     and after successful login redirects to home page
+    """
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
-        conn = sqlite3.connect('data/users.db')
+        conn = sqlite3.connect('data/podcasts.db')
         c = conn.cursor()
         c.execute('SELECT password FROM users WHERE username = ?', (username,))
         result = c.fetchone()
@@ -72,9 +107,13 @@ def login():
 
     return render_template('login.html')
 
-# Route: Logout
+
 @app.route('/logout')
 def logout():
+    """
+    Route: Logout
+    :return: redirects to home page
+    """
     session.pop('username', None)
     flash('You have been logged out.', 'success')
     return redirect(url_for('home'))
