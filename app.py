@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-import sqlite3
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 
@@ -8,23 +8,24 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 
+# SQLAlchemy configuration
+db_path = os.path.join(os.getcwd(), "data", "podcasts.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+# SQLAlchemy Models
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+
 
 def init_db():
     """
-    Database setup
-    Connects to db and creates db tables if they don't exist
+    Initializes the database and creates all necessary tables.
     """
-    conn = sqlite3.connect('data/podcasts.db')
-    c = conn.cursor()
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL
-        )
-    ''')
-    conn.commit()
-    conn.close()
+    db.create_all()
 
 
 @app.route('/')
@@ -68,14 +69,13 @@ def register():
         hashed_password = generate_password_hash(password, method='scrypt', salt_length=16)
 
         try:
-            conn = sqlite3.connect('data/podcasts.db')
-            c = conn.cursor()
-            c.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, hashed_password))
-            conn.commit()
-            conn.close()
+            new_user = User(username=username, password=hashed_password)
+            db.session.add(new_user)
+            db.session.commit()
             flash('Registration successful! Please log in.', 'success')
             return redirect(url_for('login'))
-        except sqlite3.IntegrityError:
+        except Exception as e:
+            db.session.rollback()
             flash('Username already exists. Please choose a different one.', 'error')
 
     return render_template('register.html')
@@ -92,13 +92,8 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        conn = sqlite3.connect('data/podcasts.db')
-        c = conn.cursor()
-        c.execute('SELECT password FROM users WHERE username = ?', (username,))
-        result = c.fetchone()
-        conn.close()
-
-        if result and check_password_hash(result[0], password):
+        user = User.query.filter_by(username=username).first()
+        if user and check_password_hash(user.password, password):
             session['username'] = username
             flash('Login successful!', 'success')
             return redirect(url_for('home'))
@@ -119,5 +114,6 @@ def logout():
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
-    init_db()
+    with app.app_context():
+        init_db()
     app.run(debug=True)
