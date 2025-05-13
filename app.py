@@ -1,6 +1,9 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Table, Column, Integer, ForeignKey, String
+from sqlalchemy.orm import relationship, registry
+from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 
@@ -14,28 +17,45 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+mapper_registry = registry()
+mapper_registry.configure()
+
+# Association Table
+podcasts_per_user = Table(
+    'podcasts_per_user', db.Model.metadata,
+    Column('user_id', Integer, ForeignKey('user.id'),
+           primary_key=True),
+    Column('podcast_id', Integer, ForeignKey('podcast.id'),
+           primary_key=True)
+)
+
 # SQLAlchemy Models
 class User(db.Model):
-    __tablename__ = 'users'
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
+    created_at = db.Column(db.DateTime, default=func.now(),
+                           nullable=False)  # Date stamp column
+    updated_at = Column(db.DateTime, default=func.now(), onupdate=func.now(),
+                        nullable=False)  # Auto-updating timestamp
+    # Many-to-Many Relationship
+    podcasts = relationship("Podcast", secondary=podcasts_per_user,
+                         back_populates="users")
+
 
 class Podcast(db.Model):
-    __tablename__ = 'podcasts'
+    __tablename__ = 'podcast'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), unique=True, nullable=False)
     podcast_url = db.Column(db.String(200), nullable=False)
-
-class PodcastsPerUser(db.Model):
-    __tablename__ = 'podcasts_per_user'
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
-    podcast_id = db.Column(db.Integer, db.ForeignKey('podcasts.id'), unique=True, nullable=False)
-
-# Relationships
-    user = db.relationship('User', backref=db.backref('podcasts', lazy=True))
-    podcast = db.relationship('Podcast', backref=db.backref('users', lazy=True))
+    created_at = db.Column(db.DateTime, default=func.now(),
+                           nullable=False)  # Date stamp column
+    updated_at = Column(db.DateTime, default=func.now(), onupdate=func.now(),
+                        nullable=False)  # Auto-updating timestamp
+    # Many-to-Many Relationship
+    users = relationship("User", secondary=podcasts_per_user,
+                         back_populates="podcasts")
 
 
 def init_db():
@@ -67,6 +87,7 @@ def welcome():
     """
     if request.method == 'POST':
         topic = request.form['topic']
+     #   username.podcasts.append(topic)
         print(topic)
 
     return render_template('welcome.html')
