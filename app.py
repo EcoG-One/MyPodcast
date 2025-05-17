@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship, registry
 from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
+from podcast_dialogue import create_podcast
 
 load_dotenv()
 app = Flask(__name__)
@@ -87,8 +88,19 @@ def welcome():
     """
     if request.method == 'POST':
         topic = request.form['topic']
-     #   username.podcasts.append(topic)
-        print(topic)
+        if Podcast.query.filter_by(title=topic).first():
+            return render_template("your_podcast.html")
+        else:
+            try:
+                podcast_url = create_podcast(topic)
+                new_podcast = Podcast(title=topic, podcast_url=podcast_url)
+                db.session.add(new_podcast)
+                db.session.commit()
+                return redirect(url_for("your_podcast.html"))
+            except Exception as e:
+                db.session.rollback()
+                flash(str(e),'error')
+
 
     return render_template('welcome.html')
 

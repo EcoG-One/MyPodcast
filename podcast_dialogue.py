@@ -75,9 +75,10 @@ def create_podcast(topic):
         os.remove(mp3_file)
 
     # Export the combined file
-    combined.export(f'{topic}.mp3', format='mp3')
+    combined.export(f'podcasts//{topic}.mp3', format='mp3')
+    return f'{topic}.mp3'
 
 
-if __name__ == "__main__":
+"""if __name__ == "__main__":
     topic = input("Enter the podcast topic: ")
-    create_podcast(topic)
+    create_podcast(topic)"""
