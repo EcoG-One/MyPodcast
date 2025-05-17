@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship, registry
 from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
-from podcast_dialogue import create_podcast
+from podcast import create_podcast
 
 load_dotenv()
 app = Flask(__name__)
