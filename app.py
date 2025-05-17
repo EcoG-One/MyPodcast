@@ -88,10 +88,11 @@ def welcome():
     """
     if request.method == 'POST':
         topic = request.form['topic']
-        # flash('Please Wait, your Podcast will be ready in a couple of minutes')
+        flash('Please Wait, your Podcast will be ready in a couple of minutes')
         podcast = Podcast.query.filter_by(title=topic).first()
         if podcast:
             audio_url = f"audio/{podcast.podcast_url}"
+            session['_flashes'].clear()
             return render_template('podcast.html', audio_file=audio_url)
         else:
             try:
@@ -101,6 +102,7 @@ def welcome():
                 db.session.add(new_podcast)
                 db.session.commit()
                 audio_url = f"audio/{podcast_url}"
+                session['_flashes'].clear()
                 return render_template('podcast.html', audio_file=audio_url)
             except Exception as e:
                 db.session.rollback()

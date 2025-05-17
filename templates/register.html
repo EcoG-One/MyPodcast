@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Register</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Register - My Podcast{% endblock %}
+{% block content %}
 {% with messages = get_flashed_messages()%}
 {% if messages%}
     {% for message in messages%}
@@ -13,12 +10,15 @@
     {%endwith%}
     <h1>Register</h1>
     <form method="post">
-        <label for="username">Username:</label>
-        <input type="text" name="username" required><br>
-        <label for="password">Password:</label>
-        <input type="password" name="password" required><br>
-        <button type="submit">Register</button>
+        <label for="username" class="block text-gray-300">Enter Username: </label>
+        <input type="text" id="username" name="username" maxlength="16" required
+               class="w-full p-2 mt-2 rounded border-gray-300 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <label for="password" class="block text-gray-300">Enter Password:</label>
+        <input type="password" name="password" required
+               class="w-full p-2 mt-2 rounded border-gray-300 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button type="submit"
+            class="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500">Register
+        </button>
     </form>
     <a href="/login">Already have an account? Login</a>
-</body>
-</html>
+{% endblock %}

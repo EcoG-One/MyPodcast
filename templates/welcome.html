@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Welcome!</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Welcome - My Podcast{% endblock %}
+{% block content %}
 {% with messages = get_flashed_messages()%}
 {% if messages%}
     {% for message in messages%}
@@ -14,10 +10,11 @@
     {%endwith%}
     <p>Hello, {{session['username']}}!</p>
     <form method="post">
-        <label for="topic">Please Enter a Topic:</label>
-        <input type="text" name="topic" required><br>
-        <button type="submit">Submit</button>
+        <label for="topic" class="block text-gray-300">Please Enter a Topic:</label>
+        <input type="text" name="topic" maxlength="16" required class="w-full p-2 mt-2 rounded border-gray-300 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button type="submit"
+            class="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500">Submit
+        </button>
     </form>
     <a href='/logout'>Logout</a>
-</body>
-</html>
+{% endblock %}

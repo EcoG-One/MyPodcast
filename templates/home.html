@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Home</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Home - My Podcast{% endblock %}
+{% block content %}
+
 {% with messages = get_flashed_messages()%}
 {% if messages%}
     {% for message in messages%}
@@ -13,6 +10,6 @@
     {%endif%}
     {%endwith%}
     <h1>Welcome!</h1>
-    <a href='/login'>Login</a> or <a href='/register'>Register</a>
-</body>
-</html>
+<a href="{{ url_for('login') }}" class="ml-5 hover:text-gray-900">Login</a>
+or <a href="{{ url_for('register') }}" class="mr-5 hover:text-gray-900">Register</a>
+{% endblock %}

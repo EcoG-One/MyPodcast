@@ -1,13 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Your Podcast</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Your Podcast{% endblock %}
+{% block content %}
+
+{% with messages = get_flashed_messages()%}
+{% if messages%}
+    {% for message in messages%}
+    <p>{{message}}</p>
+    {%endfor%}
+    {%endif%}
+    {%endwith%}
+    <h1>Listen to Your Podcast:</h1>
     <audio controls autoplay>
       <source src="{{ url_for('static', filename= audio_file) }}" type="audio/mpeg">
       Your browser does not support the audio element.
     </audio>
-</body>
-</html>
+{% endblock %}
