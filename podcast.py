@@ -51,34 +51,26 @@ def create_podcast(topic):
     print("Podcast generated. Converting to audio...")
     host_a_lines, host_b_lines = split_dialogue(dialogue)
     # Convert Host A's lines to audio
-    for i, line in enumerate(host_a_lines): # voices: alloy, echo, fable, onyx, nova, shimmer
+    for i, line in enumerate(host_a_lines):
         text_to_audio(line, "ash", f"host_a_line_{i}.mp3")
         print(f"Audio saved to: host_a_line_{i}.mp3")
     # Convert Host B's lines to audio
     for i, line in enumerate(host_b_lines):
         text_to_audio(line, "shimmer", f"host_b_line_{i}.mp3")
         print(f"Audio saved to: host_b_line_{i}.mp3")
-
     # List mp3 files in the order we want to concatenate
     mp3_files = []
     for i in range(len(host_a_lines)):
         mp3_files.append(f"host_a_line_{i}.mp3")
         if i < len(host_b_lines):
             mp3_files.append(f"host_b_line_{i}.mp3")
-
     # Start with the first file
     combined = AudioSegment.from_mp3(mp3_files[0])
-
     # Loop through and add the rest
     for mp3_file in mp3_files[1:]:
         combined += AudioSegment.from_mp3(mp3_file)
         os.remove(mp3_file)
-
     # Export the combined file
-    combined.export(f'podcasts//{topic}.mp3', format='mp3')
-    return f'{topic}.mp3'
-
-
-"""if __name__ == "__main__":
-    topic = input("Enter the podcast topic: ")
-    create_podcast(topic)"""
+    podcast_path = os.path.join(os.getcwd(), "static/audio", f"{topic}.mp3")
+    combined.export(podcast_path, format='mp3')
+    return podcast_path

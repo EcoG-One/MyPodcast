@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, flash, render_template, request, redirect, url_for, send_from_directory, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Table, Column, Integer, ForeignKey, String
 from sqlalchemy.orm import relationship, registry
@@ -88,19 +88,23 @@ def welcome():
     """
     if request.method == 'POST':
         topic = request.form['topic']
-        if Podcast.query.filter_by(title=topic).first():
-            return render_template("your_podcast.html")
+        # flash('Please Wait, your Podcast will be ready in a couple of minutes')
+        podcast = Podcast.query.filter_by(title=topic).first()
+        if podcast:
+            audio_url = f"audio/{podcast.podcast_url}"
+            return render_template('podcast.html', audio_file=audio_url)
         else:
             try:
-                podcast_url = create_podcast(topic)
+                create_podcast(topic)
+                podcast_url = f'{topic}.mp3'
                 new_podcast = Podcast(title=topic, podcast_url=podcast_url)
                 db.session.add(new_podcast)
                 db.session.commit()
-                return redirect(url_for("your_podcast.html"))
+                audio_url = f"audio/{podcast_url}"
+                return render_template('podcast.html', audio_file=audio_url)
             except Exception as e:
                 db.session.rollback()
                 flash(str(e),'error')
-
 
     return render_template('welcome.html')
 
@@ -117,7 +121,6 @@ def register():
         username = request.form['username']
         password = request.form['password']
         hashed_password = generate_password_hash(password, method='scrypt', salt_length=16)
-
         try:
             new_user = User(username=username, password=hashed_password)
             db.session.add(new_user)
@@ -162,6 +165,7 @@ def logout():
     session.pop('username', None)
     flash('You have been logged out.', 'success')
     return redirect(url_for('home'))
+
 
 if __name__ == '__main__':
     with app.app_context():
