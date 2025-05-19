@@ -9,7 +9,8 @@
     {%endfor%}
     {%endif%}
     {%endwith%}
-    <h1>Login</h1>
+    <h2>Login</h2>
+<div class="text-white mb-4">
     <form method="post">
         <label for="username" class="block text-gray-300">Enter Username: </label>
         <input type="text" id="username" name="username" maxlength="16" required
@@ -20,11 +21,12 @@
 
 
     <button type="submit"
-            class="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500">
+            class="btn btn-primary btn-sm py-3 px-4 small">
         Log In
     </button>
     </form>
+</div>
     Don't have an account?
-    <a href="{{ url_for('register') }}" class="mr-5 hover:text-gray-900">Register</a>
+    <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm py-3 px-4 small">Register</a></div>
 
 {% endblock %}

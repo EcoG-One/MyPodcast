@@ -9,9 +9,21 @@
     {%endfor%}
     {%endif%}
     {%endwith%}
-    <h1>Listen to Your Podcast:</h1>
-    <audio controls autoplay>
-      <source src="{{ url_for('static', filename= audio_file) }}" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
+<h1>Listen to Your Podcast:</h1>
+<audio id="myPodcast" controls autoplay>
+  <source src="{{ url_for('static', filename= audio_file) }}" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<div id="audioMessage" style="display:none; color:green; margin-top:10px;">
+  Your Podcast has finished playing!
+</div>
+<script>
+  const audio = document.getElementById('myPodcast');
+  const messageDiv = document.getElementById('audioMessage');
+  audio.addEventListener('ended', function() {
+    messageDiv.style.display = 'block';
+    // Optionally, update the text:
+    // messageDiv.textContent = 'Your custom message here!';
+  });
+</script>
 {% endblock %}

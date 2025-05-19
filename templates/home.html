@@ -9,7 +9,13 @@
     {%endfor%}
     {%endif%}
     {%endwith%}
-    <h1>Welcome!</h1>
-<a href="{{ url_for('login') }}" class="ml-5 hover:text-gray-900">Login</a>
-or <a href="{{ url_for('register') }}" class="mr-5 hover:text-gray-900">Register</a>
+
+            <h2 class="text-white font-weight-light mb-2 display-4">Welcome!</h2>
+            <div class="text-white mb-4"><a href="{{ url_for('login') }}" class="btn btn-primary btn-sm py-3 px-4 small">Login</a>
+              or <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm py-3 px-4 small">Register</a></div>
+
+
+{ % block footer %}
+
+
 {% endblock %}

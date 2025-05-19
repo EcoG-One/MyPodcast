@@ -1,7 +1,7 @@
 import os
 from flask import Flask, flash, render_template, request, redirect, url_for, send_from_directory, session
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Table, Column, Integer, ForeignKey, String
+from sqlalchemy import Table, Column, Integer, insert, ForeignKey, select
 from sqlalchemy.orm import relationship, registry
 from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -24,9 +24,9 @@ mapper_registry.configure()
 # Association Table
 podcasts_per_user = Table(
     'podcasts_per_user', db.Model.metadata,
-    Column('user_id', Integer, ForeignKey('user.id'),
+    Column('user_id', db.Integer, db.ForeignKey('user.id'),
            primary_key=True),
-    Column('podcast_id', Integer, ForeignKey('podcast.id'),
+    Column('podcast_id', db.Integer, db.ForeignKey('podcast.id'),
            primary_key=True)
 )
 
@@ -88,11 +88,22 @@ def welcome():
     """
     if request.method == 'POST':
         topic = request.form['topic']
-        flash('Please Wait, your Podcast will be ready in a couple of minutes')
+        flash('Please Wait, the AI Magic is preparing your Podcast.\nIt will be ready in a couple of minutes')
         podcast = Podcast.query.filter_by(title=topic).first()
+        user = User.query.filter_by(username=session['username']).first()
+        user_id = user.id
         if podcast:
+            podcast_id = podcast.id
+            stmt = select(podcasts_per_user).where(
+                podcasts_per_user.c.user_id == user_id)
+            results = db.session.execute(stmt).fetchall()
+            podcast_ids_for_user = [row[1] for row in results]
+            if not podcast.id in podcast_ids_for_user:
+                stmt = insert(podcasts_per_user).values(user_id=user_id,
+                                                        podcast_id=podcast_id)
+                db.session.execute(stmt)
+                db.session.commit()
             audio_url = f"audio/{podcast.podcast_url}"
-            session['_flashes'].clear()
             return render_template('podcast.html', audio_file=audio_url)
         else:
             try:
@@ -101,7 +112,11 @@ def welcome():
                 new_podcast = Podcast(title=topic, podcast_url=podcast_url)
                 db.session.add(new_podcast)
                 db.session.commit()
-                audio_url = f"audio/{podcast_url}"
+                stmt = insert(podcasts_per_user).values(user_id=user_id,
+                                                        podcast_id=new_podcast.id)
+                db.session.execute(stmt)
+                db.session.commit()
+                audio_url = f"audio/{topic}.mp3"
                 session['_flashes'].clear()
                 return render_template('podcast.html', audio_file=audio_url)
             except Exception as e:

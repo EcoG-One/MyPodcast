@@ -73,4 +73,3 @@ def create_podcast(topic):
     # Export the combined file
     podcast_path = os.path.join(os.getcwd(), "static/audio", f"{topic}.mp3")
     combined.export(podcast_path, format='mp3')
-    return podcast_path
