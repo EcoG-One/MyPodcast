@@ -34,8 +34,8 @@ podcasts_per_user = Table(
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
+    username = db.Column(db.String(40), unique=True, nullable=False)
+    password = db.Column(db.String(40), nullable=False)
     created_at = db.Column(db.DateTime, default=func.now(),
                            nullable=False)  # Date stamp column
     updated_at = Column(db.DateTime, default=func.now(), onupdate=func.now(),

@@ -9,24 +9,18 @@
     {%endfor%}
     {%endif%}
     {%endwith%}
-    <h2>Login</h2>
-<div class="text-white mb-4">
-    <form method="post">
-        <label for="username" class="block text-gray-300">Enter Username: </label>
-        <input type="text" id="username" name="username" maxlength="16" required
-               class="w-full p-2 mt-2 rounded border-gray-300 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <label for="password" class="block text-gray-300">Enter Password:</label>
-        <input type="password" id="password" name="password" required
-               class="w-full p-2 mt-2 rounded border-gray-300 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <h2 class="text-white font-weight-light mb-2 display-4">Login</h2>
 
-
-    <button type="submit"
-            class="btn btn-primary btn-sm py-3 px-4 small">
-        Log In
-    </button>
-    </form>
+<form method="post" class="site-block-subscribe">
+    <div class="input-group mb-3">
+        <input type="text" id="username" name="username" maxlength="40" required
+               class="form-control border-secondary text-white bg-transparent" placeholder="Enter Username" aria-label="Enter Username" aria-describedby="button-addon2">
+        <input type="password" id="password" name="password" maxlength="40" required
+               class="form-control border-secondary text-white bg-transparent" placeholder="Enter Password" aria-label="Enter Password" aria-describedby="button-addon2">
+        <button type="submit" class="btn btn-primary btn-sm py-3 px-4 small" id="button-addon2">Log In</button>
+    </div>
+</form>
+<div class="text-white font-weight-light mb-2">Don't have an account?
+    <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm py-3 px-4 small" type="button">Register</a>
 </div>
-    Don't have an account?
-    <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm py-3 px-4 small">Register</a></div>
-
 {% endblock %}

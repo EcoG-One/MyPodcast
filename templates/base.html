@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mediaelement@4.2.7/build/mediaelementplayer.min.css">
 
 
-    <link rel="stylesheet" href="css/aos.css">
+    <link rel="stylesheet" href="static/css/aos.css">
 
     <link rel="stylesheet" href="static/css/style.css">
 
@@ -54,7 +54,7 @@
 
                 <ul class="site-menu js-clone-nav d-none">
                   <li class="has-children active">
-                    <a href="index.html">Home</a>
+                    <a href="{{ url_for('home') }}">Home</a>
                     <ul class="dropdown arrow-top">
                       <li><a href="#">Menu One</a></li>
                       <li><a href="#">Menu Two</a></li>
@@ -77,8 +77,8 @@
                       <li><a href="#">Menu Three</a></li>
                     </ul>
                   </li>
-                  <li><a href="about.html">About</a></li>
-                  <li><a href="contact.html">Contact</a></li>
+                  <li><a href="{{ url_for('login') }}" >Login</a></li>
+                  <li><a href="{{ url_for('register') }}" >Register</a></li>
                 </ul>
             </nav>
 
@@ -272,7 +272,7 @@
     </script>
 
 
-  <script src="js/main.js"></script>
+  <script src="static/js/main.js"></script>
 {% block footer %}{% endblock %}
   </body>
 </html>
