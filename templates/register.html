@@ -8,18 +8,19 @@
     {%endfor%}
     {%endif%}
     {%endwith%}
-    <h1>Register</h1>
-    <form method="post">
-        <label for="username" class="block text-gray-300">Enter Username: </label>
-        <input type="text" id="username" name="username" maxlength="16" required
-               class="w-full p-2 mt-2 rounded border-gray-300 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <label for="password" class="block text-gray-300">Enter Password:</label>
-        <input type="password" id="password" name="password" required
-               class="w-full p-2 mt-2 rounded border-gray-300 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <button type="submit"
-            class="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500">Register
-        </button>
-    </form>
-    Already have an account?
-    <a href="{{ url_for('login') }}" class="mr-5 hover:text-gray-900">Login</a>
+<h2 class="text-white font-weight-light mb-2 display-4">Register</h2>
+
+<form method="post" class="site-block-subscribe">
+    <div class="input-group mb-3">
+        <input type="text" id="username" name="username" maxlength="40" required
+               class="form-control border-secondary text-white bg-transparent" placeholder="Enter Username" aria-label="Enter Username" aria-describedby="button-addon2">
+        <input type="password" id="password" name="password" maxlength="40" required
+               class="form-control border-secondary text-white bg-transparent" placeholder="Enter Password" aria-label="Enter Password" aria-describedby="button-addon2">
+        <button type="submit" class="btn btn-primary btn-sm py-3 px-4 small" id="button-addon2">Register</button>
+    </div>
+</form>
+<div class="text-white font-weight-light mb-2">Already have an account?
+    <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm py-3 px-4 small" type="button">Log In</a>
+</div>
+
 {% endblock %}

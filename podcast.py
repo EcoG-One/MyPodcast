@@ -1,6 +1,7 @@
 import openai
 from pydub import AudioSegment
 import os
+from flask import flash
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -45,6 +46,8 @@ def text_to_audio(text, host, filename):
 
 
 def create_podcast(topic):
+    flash(
+        'Please Wait, the AI Magic is preparing your Podcast.\nIt will be ready in a couple of minutes')
     print(f"Generating podcast for the topic: {topic}")
     dialogue = generate_dialogue(topic)
     print("Podcast Text:", dialogue)

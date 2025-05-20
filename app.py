@@ -88,7 +88,6 @@ def welcome():
     """
     if request.method == 'POST':
         topic = request.form['topic']
-        flash('Please Wait, the AI Magic is preparing your Podcast.\nIt will be ready in a couple of minutes')
         podcast = Podcast.query.filter_by(title=topic).first()
         user = User.query.filter_by(username=session['username']).first()
         user_id = user.id

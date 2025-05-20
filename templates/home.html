@@ -10,7 +10,21 @@
     {%endif%}
     {%endwith%}
 
-            <h2 class="text-white font-weight-light mb-2 display-4">Welcome!</h2>
-            <div class="text-white mb-4"><a href="{{ url_for('login') }}" class="btn btn-primary btn-sm py-3 px-4 small">Login</a>
-              or <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm py-3 px-4 small">Register</a></div>
+<h2 class="text-white font-weight-light mb-2 display-4">Welcome!</h2>
+  <div class="mb-5 text-white">
+        Create your own Podcast within seconds!<br>
+        All you need is to enter the topic and the AI magic will create a fun podcast for you.<br>
+        In 3 simple steps:
+        <ul class="list-unstyled">
+          <li>One: Register with a username and a password of your choice.</li>
+          <li>Two: Login with your username and password</li>
+          <li>Three: Enter the theme of your podcast</li>
+      </ul>
+        …and puff – in seconds, the magic of AI will have your full voice podcast ready: a podcast with dialogues between 2 or more people on the topic chosen by you! Any topic!<br>
+        You can create as many Podcasts as you want, and next time you log in, all your podcasts will be there, ready for you to listen to them again!
+  </div>
+<div class="text-white mb-4"><a href="{{ url_for('login') }}" class="btn btn-primary btn-sm py-3 px-4 small">Login</a>
+  or <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm py-3 px-4 small">Register</a></div>
+
+
 {% endblock %}
