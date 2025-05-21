@@ -16,14 +16,18 @@
       Your browser does not support the audio element.
     </audio>
 </div>
-<div id="audioMessage" style="display:none; color:green; margin-top:10px;">
-  Your Podcast has finished playing!
+<div class="text-white font-weight-light mb-2">
+<div id="audioMessage">
+  Your Podcast has finished playing!<br>Go Back for more Podcasts<br><a href="{{ url_for('home') }}" class="btn btn-primary btn-sm py-3 px-4 small" type="button">Back</a>
 </div>
+</div>
+
 <script>
   const audio = document.getElementById('myPodcast');
   const messageDiv = document.getElementById('audioMessage');
+  messageDiv.style.visibility = "hidden";
   audio.addEventListener('ended', function() {
-    messageDiv.style.display = 'block';
+    messageDiv.style.visibility = "visible";
     // Optionally, update the text:
     // messageDiv.textContent = 'Your custom message here!';
   });

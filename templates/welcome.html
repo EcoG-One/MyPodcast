@@ -17,7 +17,10 @@
         <button type="submit" class="btn btn-primary btn-sm py-3 px-4 small" id="button-addon2">Submit</button>
     </div>
 </form>
-<div class="text-white font-weight-light mb-2">Leaving so soon?
-    <a href="{{ url_for('logout') }}" class="btn btn-primary btn-sm py-3 px-4 small" type="button">Logout</a>
-</div>
+{% if user_podcasts_list %}
+   <h2 class="text-white font-weight-light mb-2 display-4">Listen to Your Previous Podcasts:</h2>
+    {% for podcast in user_podcasts_list %}
+        <a href="{{ url_for('podcast', audio_file=podcast.podcast_url) }}">{{ podcast.title}}</a><br>
+    {% endfor %}
+    {% endif %}
 {% endblock %}

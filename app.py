@@ -86,11 +86,19 @@ def welcome():
     Inputs the Podcast topic
     :return:
     """
+    user = User.query.filter_by(username=session['username']).first()
+    user_id = user.id
+    stmt = select(podcasts_per_user).where(
+        podcasts_per_user.c.user_id == user_id)
+    podcast_ids_for_user = []
+    results = db.session.execute(stmt).fetchall()
+    if results:
+        podcast_ids_for_user = [row[1] for row in results]
+    user_podcasts_list = []
     if request.method == 'POST':
         topic = request.form['topic']
         podcast = Podcast.query.filter_by(title=topic).first()
-        user = User.query.filter_by(username=session['username']).first()
-        user_id = user.id
+
         if podcast:
             podcast_id = podcast.id
             stmt = select(podcasts_per_user).where(
@@ -122,7 +130,11 @@ def welcome():
                 db.session.rollback()
                 flash(str(e),'error')
 
-    return render_template('welcome.html')
+    if request.method == 'GET':
+        if podcast_ids_for_user:
+            [user_podcasts_list.append(Podcast.query.filter_by(id=i).first()) for i in podcast_ids_for_user]
+    return render_template('welcome.html',
+                                   user_podcasts_list=user_podcasts_list)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -170,6 +182,16 @@ def login():
             flash('Invalid username or password.', 'error')
 
     return render_template('login.html')
+
+
+@app.route('/podcast')
+def podcast():
+    return render_template('podcast.html', audio_file=f"audio/{request.args.get('audio_file')}")
+
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 
 @app.route('/logout')
