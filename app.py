@@ -137,6 +137,24 @@ def welcome():
                                    user_podcasts_list=user_podcasts_list)
 
 
+
+@app.route('/previous_podcasts')
+def previous_podcasts():
+    user = User.query.filter_by(username=session['username']).first()
+    user_id = user.id
+    stmt = select(podcasts_per_user).where(
+        podcasts_per_user.c.user_id == user_id)
+    podcast_ids_for_user = []
+    results = db.session.execute(stmt).fetchall()
+    if results:
+        podcast_ids_for_user = [row[1] for row in results]
+    user_podcasts_list = []
+    if podcast_ids_for_user:
+        [user_podcasts_list.append(Podcast.query.filter_by(id=i).first()) for i
+         in podcast_ids_for_user]
+    return render_template('previous_podcasts.html', user_podcasts_list=user_podcasts_list)
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     """

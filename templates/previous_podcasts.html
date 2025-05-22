@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Your Podcast{% endblock %}
+{% block content %}
+
+{% with messages = get_flashed_messages()%}
+{% if messages%}
+    {% for message in messages%}
+    <p>{{message}}</p>
+    {%endfor%}
+    {%endif%}
+    {%endwith%}
+{% if user_podcasts_list %}
+              <h3 class="footer-heading mb-4">Your Recent Podcasts</h3>
+              <div class="block-25">
+                    {% set n = user_podcasts_list|length %}
+                      {% for i in range(n-1, 0, -1) %}
+                        {% set podcast = user_podcasts_list[i] %}
+                <ul class="list-unstyled">
+                  <li class="mb-3">
+                      <a href="{{ url_for('podcast', audio_file=podcast.podcast_url) }}">
+                   <!--
+                   if many podcasts use class="d-flex"
+                   <figure class="image mr-4">
+                        <img src="static/images/img_1.jpg" alt="" class="img-fluid">
+                      </figure> -->
+                      <div class="text">
+                        <h3 class="heading text-white font-weight-light">{{ podcast.title}}</h3>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+                {% endfor %}
+              </div>
+              {% endif %}
+{% endblock %}

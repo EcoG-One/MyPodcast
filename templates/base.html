@@ -22,10 +22,9 @@
     <link rel="stylesheet" href="static/css/style.css">
 
   </head>
-  <body>
+  <body class="d-flex flex-column min-vh-100">
 
-  <div class="site-wrap">
-
+  <div class="site-wrap flex-fill">
     <div class="site-mobile-menu">
       <div class="site-mobile-menu-header">
         <div class = "spacer"></div>
@@ -50,36 +49,15 @@
             <nav class="site-navigation position-relative text-right text-md-right" role="navigation">
                <div class="d-inline-block ml-md-0 mr-auto py-3"><a href="#" class="site-menu-toggle js-menu-toggle text-white"><span class="icon-menu h3"></span></a></div>
                 <ul class="site-menu js-clone-nav d-none">
-                  <li class="has-children active">
-                    <a href="{{ url_for('home') }}">Home</a>
-                    <ul class="dropdown arrow-top">
-                      <li><a href="#">Menu One</a></li>
-                      <li><a href="#">Menu Two</a></li>
-                      <li><a href="#">Menu Three</a></li>
-                      <li class="has-children">
-                        <a href="#">Sub Menu</a>
-                        <ul class="dropdown">
-                          <li><a href="#">Menu One</a></li>
-                          <li><a href="#">Menu Two</a></li>
-                          <li><a href="#">Menu Three</a></li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </li>
-                  <li class="has-children">
-                    <a href="#">Dropdown</a>
-                    <ul class="dropdown arrow-top">
-                      <li><a href="#">Menu One</a></li>
-                      <li><a href="#">Menu Two</a></li>
-                      <li><a href="#">Menu Three</a></li>
-                    </ul>
-                  </li>
+                  <li><a href="{{ url_for('home') }}">Home</a>
+                  <li><a href="{{ url_for('previous_podcasts') }}">Previous Podcasts</a>
                   <li><a href="{{ url_for('login') }}" >Login</a></li>
                   <li><a href="{{ url_for('register') }}" >Register</a></li>
+                  <li><a href="{{ url_for('about') }}">About</a>
                 </ul>
             </nav>
           </div>
-            <div class="col-6 text-white font-weight-light mb-2 position-relative text-right text-md-right"><a href="{{ url_for('logout') }}" class="btn btn-primary btn-sm py-3 px-4 small" type="button">Logout</a><br>
+            <div id=logout class="col-6 text-white font-weight-light mb-2 position-relative text-right text-md-right"><a href="{{ url_for('logout') }}" class="btn btn-primary btn-sm py-3 px-4 small" type="button">Logout</a><br>
             Leaving so soon?
            </div>
         </div>
@@ -87,7 +65,7 @@
 
     </header>
     <div class="site-blocks-cover overlay" style="background-image: url(static/images/hero_bg_1.jpg);" data-aos="fade" data-stellar-background-ratio="0.5">
-      <div class="container">
+      <div class="container pt-5">
 
         <div class="row  align-items-center justify-content-center text-center">
 
@@ -100,7 +78,7 @@
 
       </div>
     </div>
-<footer class="site-footer">
+<footer class="site-footer text-center py-3 mt-auto">
       <div class="container">
         <div class="row">
           <div class="col-lg-4">
@@ -119,41 +97,27 @@
             </div>
 
             <div class="mb-5">
-              <h3 class="footer-heading mb-4">Recent Podcast</h3>
+              {% if user_podcasts_list %}
+              <h3 class="footer-heading mb-4">Your Recent Podcasts</h3>
               <div class="block-25">
+                    {% set n = user_podcasts_list|length %}
+                      {% for i in range(n-1, n-4, -1) %}
+                        {% set podcast = user_podcasts_list[i] %}
                 <ul class="list-unstyled">
                   <li class="mb-3">
-                    <a href="#" class="d-flex">
+                      <a href="{{ url_for('podcast', audio_file=podcast.podcast_url) }}" class="d-flex">
                       <figure class="image mr-4">
                         <img src="static/images/img_1.jpg" alt="" class="img-fluid">
                       </figure>
                       <div class="text">
-                        <h3 class="heading font-weight-light">Lorem ipsum dolor sit amet consectetur elit</h3>
-                      </div>
-                    </a>
-                  </li>
-                  <li class="mb-3">
-                    <a href="#" class="d-flex">
-                      <figure class="image mr-4">
-                        <img src="static/images/img_1.jpg" alt="" class="img-fluid">
-                      </figure>
-                      <div class="text">
-                        <h3 class="heading font-weight-light">Lorem ipsum dolor sit amet consectetur elit</h3>
-                      </div>
-                    </a>
-                  </li>
-                  <li class="mb-3">
-                    <a href="#" class="d-flex">
-                      <figure class="image mr-4">
-                        <img src="static/images/img_1.jpg" alt="" class="img-fluid">
-                      </figure>
-                      <div class="text">
-                        <h3 class="heading font-weight-light">Lorem ipsum dolor sit amet consectetur elit</h3>
+                        <h3 class="heading font-weight-light">{{ podcast.title}}</h3>
                       </div>
                     </a>
                   </li>
                 </ul>
+                {% endfor %}
               </div>
+              {% endif %}
             </div>
 
           </div>
@@ -252,6 +216,16 @@
   <script src="static/js/aos.js"></script>
 
   <script src="static/js/mediaelement-and-player.min.js"></script>
+
+ <script>
+      const pagesToHideOn = ["/", "/register", "/login"];
+      if (pagesToHideOn.includes(window.location.pathname)) {
+        var element = document.getElementById("logout");
+      if (element) {
+        element.style.display = "none";
+      }
+    }
+</script>
 
   <script>
       document.addEventListener('DOMContentLoaded', function() {
