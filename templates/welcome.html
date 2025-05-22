@@ -9,10 +9,10 @@
     {%endif%}
     {%endwith%}
 <h2 class="text-white font-weight-light mb-2 display-4">Hello, {{session['username']}}!</h2>
-<div class="mb-5 text-white">Enter below the topic of your podcast:</div>
+<div class="mb-5 text-white">Enter your podcast topic below and be patient,<br>AI Magic will create your podcast in a couple of minutes.</div>
     <form method="post"  class="site-block-subscribe">
         <div class="input-group mb-3">
-        <input type="text" id="topic" name="topic" maxlength="40" required
+        <input type="text" id="topic" name="topic" maxlength="80" required
                class="form-control border-secondary text-white bg-transparent" placeholder="Enter Topic" aria-label="Enter Topic" aria-describedby="button-addon2">
         <button type="submit" class="btn btn-primary btn-sm py-3 px-4 small" id="button-addon2">Submit</button>
     </div>

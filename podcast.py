@@ -1,6 +1,8 @@
 import openai
 from pydub import AudioSegment
 import os
+import re
+import sys
 from flask import flash
 from dotenv import load_dotenv
 
@@ -44,10 +46,14 @@ def text_to_audio(text, host, filename):
         response.stream_to_file(filename)
 
 
+def clean_path(path):
+    if os.name == 'nt':  # Windows
+        return re.sub(r'[<>:"/\\|?*]', '', path)
+    else:  # POSIX
+        return re.sub(r'[\/\0]', '', path)
+
 
 def create_podcast(topic):
-    flash(
-        'Please Wait, the AI Magic is preparing your Podcast.\nIt will be ready in a couple of minutes')
     print(f"Generating podcast for the topic: {topic}")
     dialogue = generate_dialogue(topic)
     print("Podcast Text:", dialogue)
@@ -74,5 +80,6 @@ def create_podcast(topic):
         combined += AudioSegment.from_mp3(mp3_file)
         os.remove(mp3_file)
     # Export the combined file
-    podcast_path = os.path.join(os.getcwd(), "static/audio", f"{topic}.mp3")
+    podcast_path = os.path.join(os.getcwd(), "static/audio", f"{clean_path(topic)}.mp3")
     combined.export(podcast_path, format='mp3')
+    return f"{clean_path(topic)}.mp3"

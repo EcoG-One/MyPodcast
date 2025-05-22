@@ -113,9 +113,10 @@ def welcome():
             audio_url = f"audio/{podcast.podcast_url}"
             return render_template('podcast.html', audio_file=audio_url)
         else:
+           # flash(
+            #    'Please Wait, the AI Magic is preparing your Podcast.\nIt will be ready in a couple of minutes')
             try:
-                create_podcast(topic)
-                podcast_url = f'{topic}.mp3'
+                podcast_url = create_podcast(topic)
                 new_podcast = Podcast(title=topic, podcast_url=podcast_url)
                 db.session.add(new_podcast)
                 db.session.commit()
@@ -123,8 +124,8 @@ def welcome():
                                                         podcast_id=new_podcast.id)
                 db.session.execute(stmt)
                 db.session.commit()
-                audio_url = f"audio/{topic}.mp3"
-                session['_flashes'].clear()
+             #   session['_flashes'].clear()
+                audio_url = f"audio/{podcast_url}"
                 return render_template('podcast.html', audio_file=audio_url)
             except Exception as e:
                 db.session.rollback()
@@ -140,18 +141,21 @@ def welcome():
 
 @app.route('/previous_podcasts')
 def previous_podcasts():
-    user = User.query.filter_by(username=session['username']).first()
-    user_id = user.id
-    stmt = select(podcasts_per_user).where(
-        podcasts_per_user.c.user_id == user_id)
-    podcast_ids_for_user = []
-    results = db.session.execute(stmt).fetchall()
-    if results:
-        podcast_ids_for_user = [row[1] for row in results]
     user_podcasts_list = []
-    if podcast_ids_for_user:
-        [user_podcasts_list.append(Podcast.query.filter_by(id=i).first()) for i
-         in podcast_ids_for_user]
+    if session:
+        user = User.query.filter_by(username=session['username']).first()
+        user_id = user.id
+        stmt = select(podcasts_per_user).where(
+            podcasts_per_user.c.user_id == user_id)
+        podcast_ids_for_user = []
+        results = db.session.execute(stmt).fetchall()
+        if results:
+            podcast_ids_for_user = [row[1] for row in results]
+        if podcast_ids_for_user:
+            [user_podcasts_list.append(Podcast.query.filter_by(id=i).first()) for i
+             in podcast_ids_for_user]
+    else:
+        flash("Please Log in First")
     return render_template('previous_podcasts.html', user_podcasts_list=user_podcasts_list)
 
 

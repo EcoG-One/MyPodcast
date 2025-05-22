@@ -1,14 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Your Podcast{% endblock %}
+{% block title %}Previous Podcasts{% endblock %}
 {% block content %}
 
-{% with messages = get_flashed_messages()%}
-{% if messages%}
-    {% for message in messages%}
-    <p>{{message}}</p>
-    {%endfor%}
-    {%endif%}
-    {%endwith%}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul id="flash-messages" class="list-unstyled">
+      {% for message in messages %}
+        <li class="text-white font-weight-light mb-2 display-4">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 {% if user_podcasts_list %}
               <h3 class="footer-heading mb-4">Your Recent Podcasts</h3>
               <div class="block-25">
@@ -32,4 +34,23 @@
                 {% endfor %}
               </div>
               {% endif %}
+<div id="login" class="text-white mb-4"  style="display:none;"><a href="{{ url_for('login') }}" class="btn btn-primary btn-sm py-3 px-4 small">Login</a>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Get all flash message elements (assuming they are <li> inside #flash-messages)
+  var flashMessages = document.querySelectorAll('#flash-messages li');
+  flashMessages.forEach(function(msg) {
+    if (msg.textContent.trim() === "Please Log in First") {
+      var el = document.getElementById("logout");
+      if (el) {
+        el.style.display = "none";
+      }
+      var eli = document.getElementById("login");
+      if (eli) {
+        eli.style.display = "block"; // Show the login element
+      }
+    }
+  });
+});
+</script>
 {% endblock %}
