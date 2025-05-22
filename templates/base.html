@@ -101,7 +101,8 @@
               <h3 class="footer-heading mb-4">Your Recent Podcasts</h3>
               <div class="block-25">
                     {% set n = user_podcasts_list|length %}
-                      {% for i in range(n-1, n-4, -1) %}
+                    {% set m = [n, 3]|min %}
+                      {% for i in range(m-1, -m, -1) %}
                         {% set podcast = user_podcasts_list[i] %}
                 <ul class="list-unstyled">
                   <li class="mb-3">
