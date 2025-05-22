@@ -2,8 +2,6 @@ import openai
 from pydub import AudioSegment
 import os
 import re
-import sys
-from flask import flash
 from dotenv import load_dotenv
 
 load_dotenv()

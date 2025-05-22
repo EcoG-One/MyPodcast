@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Your Podcast{% endblock %}
+{% block content %}
+
+{% with messages = get_flashed_messages()%}
+{% if messages%}
+    {% for message in messages%}
+    <p>{{message}}</p>
+    {%endfor%}
+    {%endif%}
+    {%endwith%}
+
+          <div class="col-md-12" data-aos="fade-up" data-aos-delay="400">
+            <h2 class="text-white font-weight-light mb-2 display-4">About us</h2>
+            <div class="mb-5 text-white">
+              Well... For the moment we are a mystery.<br>
+              But stay tuned, you'll never know!
+          </div>
+        </div>
+          <div class="spacer"></div>
+    </div>  
+
+
+{% endblock %}
