@@ -160,10 +160,11 @@
                     {% set m = [n, 3]|min %}
                       {% for i in range(n-1, n-m-1, -1) %}
                         {% set podcast = user_podcasts_list[i] %}
+                        {% set image = "static/images/img_" + (n-i)|string + ".jpg" %}
                   <li class="mb-3">
                       <a href="{{ url_for('podcast', audio_file=podcast.podcast_url) }}" class="d-flex">
                       <figure class="image mr-4">
-                        <img src="static/images/img_1.jpg" alt="" class="img-fluid">
+                        <img src="{{ image }}" alt="" class="img-fluid">
                       </figure>
                       <div class="text">
                         <h3 class="heading font-weight-light">{{ podcast.title}}</h3>
