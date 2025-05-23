@@ -34,9 +34,11 @@
                 {% endfor %}
               </div>
 {% else %}
-    <h3 class="footer-heading mb-4">You have no Podcasts yet</h3>
-<a href="{{ url_for('home') }}" class="btn btn-primary btn-sm py-3 px-4 small" type="button">Create</a>
-<div class="text-white mb-4">your first Podcast!</div>
+    <div id="create">
+        <h3 class="footer-heading mb-4">You have no Podcasts yet</h3>
+        <a href="{{ url_for('home') }}" class="btn btn-primary btn-sm py-3 px-4 small" type="button">Create</a>
+        <div class="text-white mb-4">your first Podcast!</div>
+    </div>
 {% endif %}
 <div id="login" class="text-white mb-4"  style="display:none;"><a href="{{ url_for('login') }}" class="btn btn-primary btn-sm py-3 px-4 small">Login</a>
 <script>
@@ -48,6 +50,10 @@ document.addEventListener("DOMContentLoaded", function() {
       var el = document.getElementById("logout");
       if (el) {
         el.style.display = "none";
+      }
+      var cr = document.getElementById("create");
+      if (cr) {
+        cr.style.display = "none";
       }
       var eli = document.getElementById("login");
       if (eli) {
