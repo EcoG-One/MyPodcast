@@ -892,6 +892,11 @@ a {
 .block-25 ul li a:hover .text .heading {
   color: #fff; }
 
+.block-25-scrollable {
+  max-height: 75%;
+  overflow-y: auto;
+}
+
 #date-countdown .countdown-block {
   color: #b3b3b3; }
 
