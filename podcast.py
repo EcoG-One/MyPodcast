@@ -3,35 +3,32 @@ from pydub import AudioSegment
 import os
 import re
 from dotenv import load_dotenv
-
+from pydantic import BaseModel
+from typing import List
 load_dotenv()
 
 # Set up your OpenAI API key
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
+class DialogueTurn(BaseModel):
+    speaker: str  # "HostA" or "HostB"
+    text: str     # The spoken content
+
+class Dialogue(BaseModel):
+    turns: List[DialogueTurn]
+
 def generate_dialogue(topic):
     prompt = f"Create an one minute podcast dialogue between you and Doris discussing about {topic}."
-    response = client.chat.completions.create(
+    completion = client.beta.chat.completions.parse(
         model="gpt-4o-mini",
         messages=[{"role": "developer", "content": "You are creating a podcast "
          "dialogue between two hosts. Host A is male cheerful and energetic. "
             "Host B is female, calm and analytical. Host A is named George. Host B is named Doris"},
-                  {"role": "user", "content": prompt}]
+                  {"role": "user", "content": prompt}],
+        response_format=Dialogue,
     )
-    return response.choices[0].message.content
-
-def split_dialogue(dialogue):
-    lines = dialogue.splitlines()
-    host_a_lines = []
-    for line in lines:
-        if line.startswith("**George:** "):
-            host_a_lines.append(line.split("**George:** ")[1])
-    host_b_lines = []
-    for line in lines:
-        if line.startswith("**Doris:** "):
-            host_b_lines.append(line.split("**Doris:** ")[1])
-    return host_a_lines, host_b_lines
+    return completion.choices[0].message.parsed
 
 
 def text_to_audio(text, host, filename):
@@ -54,25 +51,23 @@ def clean_path(path):
 def create_podcast(topic):
     print(f"Generating podcast for the topic: {topic}")
     dialogue = generate_dialogue(topic)
-    print("Podcast Text:", dialogue)
+    print("Podcast Text:", dialogue.turns)
     print("Podcast generated. Converting to audio...")
-    host_a_lines, host_b_lines = split_dialogue(dialogue)
-    # Convert Host A's lines to audio
-    for i, line in enumerate(host_a_lines):
-        text_to_audio(line, "ash", f"host_a_line_{i}.mp3")
-        print(f"Audio saved to: host_a_line_{i}.mp3")
-    # Convert Host B's lines to audio
-    for i, line in enumerate(host_b_lines):
-        text_to_audio(line, "shimmer", f"host_b_line_{i}.mp3")
-        print(f"Audio saved to: host_b_line_{i}.mp3")
+    for i in range(len(dialogue.turns)):
+        if dialogue.turns[i].speaker == "George":
+            host = "ash"
+        else:
+            host = "shimmer"
+        text_to_audio(dialogue.turns[i].text, host, f"podcast_line_{i}.mp3")
+        print(f"Audio saved to: podcast_line_{i}.mp3")
+
     # List mp3 files in the order we want to concatenate
     mp3_files = []
-    for i in range(len(host_a_lines)):
-        mp3_files.append(f"host_a_line_{i}.mp3")
-        if i < len(host_b_lines):
-            mp3_files.append(f"host_b_line_{i}.mp3")
+    for i in range(len(dialogue.turns)):
+        mp3_files.append(f"podcast_line_{i}.mp3")
     # Start with the first file
     combined = AudioSegment.from_mp3(mp3_files[0])
+    os.remove(mp3_files[0])
     # Loop through and add the rest
     for mp3_file in mp3_files[1:]:
         combined += AudioSegment.from_mp3(mp3_file)

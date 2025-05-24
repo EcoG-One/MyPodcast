@@ -4,3 +4,4 @@ python-dotenv~=1.1.0
 openai~=1.77.0
 sqlalchemy~=2.0.40
 pydub~=0.25.1
+pydantic~=2.11.4
