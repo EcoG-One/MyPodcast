@@ -66,12 +66,14 @@ def create_podcast(topic):
     for i in range(len(dialogue.turns)):
         mp3_files.append(f"podcast_line_{i}.mp3")
     # Start with the first file
-    combined = AudioSegment.from_mp3(mp3_files[0])
-    os.remove(mp3_files[0])
+    # combined = AudioSegment.from_mp3(mp3_files[0])
+    combined = AudioSegment.from_mp3("static/audio/mind-intro.mp3")
+    # os.remove(mp3_files[0])
     # Loop through and add the rest
-    for mp3_file in mp3_files[1:]:
+    for mp3_file in mp3_files:
         combined += AudioSegment.from_mp3(mp3_file)
         os.remove(mp3_file)
+    combined += AudioSegment.from_mp3("static/audio/mind-intro.mp3")
     # Export the combined file
     podcast_path = os.path.join(os.getcwd(), "static/audio", f"{clean_path(topic)}.mp3")
     combined.export(podcast_path, format='mp3')
