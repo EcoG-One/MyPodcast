@@ -8,9 +8,10 @@
     {%endfor%}
     {%endif%}
     {%endwith%}
+<div class="loader" style="display: none;"></div>
 <h2 class="text-white font-weight-light mb-2 display-4">Hello, {{session['username']}}!</h2>
 <div class="mb-5 text-white">Enter your podcast topic below and be patient,<br>AI Magic will create your podcast in a couple of minutes.</div>
-    <form method="post"  class="site-block-subscribe">
+    <form id="topic_form"method="post"  class="site-block-subscribe">
         <div class="input-group mb-3">
         <input type="text" id="topic" name="topic" maxlength="80" required
                class="form-control border-secondary text-white bg-transparent" placeholder="Enter Topic" aria-label="Enter Topic" aria-describedby="button-addon2">
@@ -24,4 +25,10 @@
             <a href="{{ url_for('podcast', audio_file=podcast.podcast_url) }}">{{ podcast.title}}</a><br>
         {% endfor %}
         {% endif %} -->
+<script>
+document.getElementById('topic_form').addEventListener('submit', function(event) {
+    // Show the loader
+    document.querySelector('.loader').style.display = 'block';
+  });
+</script>
 {% endblock %}
