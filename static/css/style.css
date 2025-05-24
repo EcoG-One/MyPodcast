@@ -287,23 +287,25 @@ a {
 .site-mobile-menu {
   width: 300px;
   position: fixed;
-  right: 0;
+  left: 0; /* changed from right:0; */
   z-index: 2000;
   padding-top: 20px;
   background: #fff;
   height: calc(100vh);
-  -webkit-transform: translateX(110%);
-  -ms-transform: translateX(110%);
-  transform: translateX(110%);
-  -webkit-box-shadow: -10px 0 20px -10px rgba(0, 0, 0, 0.1);
-  box-shadow: -10px 0 20px -10px rgba(0, 0, 0, 0.1);
+  -webkit-transform: translateX(-110%); /* changed from 110% to -110% */
+  -ms-transform: translateX(-110%);
+  transform: translateX(-110%);
+  -webkit-box-shadow: 10px 0 20px -10px rgba(0, 0, 0, 0.1); /* changed direction */
+  box-shadow: 10px 0 20px -10px rgba(0, 0, 0, 0.1); /* changed direction */
   -webkit-transition: .3s all ease-in-out;
   -o-transition: .3s all ease-in-out;
-  transition: .3s all ease-in-out; }
-  .offcanvas-menu .site-mobile-menu {
-    -webkit-transform: translateX(0%);
-    -ms-transform: translateX(0%);
-    transform: translateX(0%); }
+  transition: .3s all ease-in-out;
+}
+.offcanvas-menu .site-mobile-menu {
+  -webkit-transform: translateX(0%);
+  -ms-transform: translateX(0%);
+  transform: translateX(0%);
+}
   .site-mobile-menu .site-mobile-menu-header {
     width: 100%;
     float: left;

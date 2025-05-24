@@ -27,7 +27,6 @@
   <div class="site-wrap flex-fill">
     <div class="site-mobile-menu">
       <div class="site-mobile-menu-header">
-        <div class = "spacer"></div>
         <div class="site-mobile-menu-close mt-3">
           <span class="icon-close2 js-menu-toggle"></span>
         </div>
@@ -42,11 +41,7 @@
         <div class="row align-items-center">
 
           <div class="col-3" data-aos="fade-down">
-            <h1 class="text-white h1">My Podcast</h1>
-          </div>
-
-          <div class="col-3" data-aos="fade-down">
-            <nav class="site-navigation position-relative text-right text-md-right" role="navigation">
+            <nav class="site-navigation position-relative text-left text-md-left" role="navigation">
                <div class="d-inline-block ml-md-0 mr-auto py-3"><a href="#" class="site-menu-toggle js-menu-toggle text-white"><span class="icon-menu h3"></span></a></div>
                 <ul class="site-menu js-clone-nav d-none">
                   <li><a href="{{ url_for('home') }}">Home</a>
@@ -57,9 +52,14 @@
                 </ul>
             </nav>
           </div>
-            <div id=logout class="col-6 text-white font-weight-light mb-2 position-relative text-right text-md-right"><a href="{{ url_for('logout') }}" class="btn btn-primary btn-sm py-3 px-4 small" type="button">Logout</a><br>
+
+          <div class="col-6 position-relative text-center text-md-center" data-aos="fade-down">
+            <h1 class="text-white h1">MyPodcast</h1>
+          </div>
+
+          <div id=logout class="col-3 text-white font-weight-light mb-2 position-relative text-right text-md-right"><a href="{{ url_for('logout') }}" class="btn btn-primary btn-sm" type="button">Logout</a><br>
             Leaving so soon?
-           </div>
+          </div>
         </div>
       </div>
     </header>
