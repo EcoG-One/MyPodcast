@@ -211,6 +211,22 @@ def podcast():
     return render_template('podcast.html', audio_file=f"audio/{request.args.get('audio_file')}")
 
 
+@app.route('/options')
+def options():
+    if request.method == 'POST':
+        options = {
+        "ai_model": request.form['ai_model'],
+        "host1_name": request.form['host1_name'],
+        "host2_name": request.form['host2_name'],
+        "host1_voice": request.form['host1_voice'],
+        "host2_voice": request.form['host1_voice'],
+        "host1_mood": request.form['host1_mood'],
+        "host2_mood": request.form['host1_mood']
+        }
+        return render_template('welcome.html', options=options)
+    return render_template('options.html')
+
+
 @app.route('/about')
 def about():
     return render_template('about.html')

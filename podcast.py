@@ -5,8 +5,8 @@ import re
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from typing import List
-load_dotenv()
 
+load_dotenv()
 # Set up your OpenAI API key
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
