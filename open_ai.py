@@ -18,13 +18,13 @@ class DialogueTurn(BaseModel):
 class Dialogue(BaseModel):
     turns: List[DialogueTurn]
 
-def generate_dialogue(topic):
+def generate_dialogue(topic, options):
     prompt = f"Create an one minute podcast dialogue between you and Doris discussing about {topic}."
     completion = client.beta.chat.completions.parse(
         model="gpt-4o-mini",
-        messages=[{"role": "developer", "content": "You are creating a podcast "
-         "dialogue between two hosts. Host A is male cheerful and energetic. "
-            "Host B is female, calm and analytical. Host A is named George. Host B is named Doris"},
+        messages=[{"role": "developer", "content": f"You are creating a podcast dialogue between two hosts. "
+                   f"Host A is male {options['host1_mood']}. Host B is female, {options['host2_mood']}. "
+                   f"Host A is named {options['name']}. Host B is named {options['host2_name']}"},
                   {"role": "user", "content": prompt}],
         response_format=Dialogue,
     )
@@ -48,9 +48,9 @@ def clean_path(path):
         return re.sub(r'[\/\0]', '', path)
 
 
-def create_podcast(topic):
+def ai_create_podcast(topic, options):
     print(f"Generating podcast for the topic: {topic}")
-    dialogue = generate_dialogue(topic)
+    dialogue = generate_dialogue(topic, options)
     print("Podcast Text:", dialogue.turns)
     print("Podcast generated. Converting to audio...")
     for i in range(len(dialogue.turns)):

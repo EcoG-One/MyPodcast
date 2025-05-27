@@ -6,7 +6,8 @@ from sqlalchemy.orm import relationship, registry
 from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
-from podcast import create_podcast
+from open_ai import ai_create_podcast
+from gemini import gemini_create_podcast
 
 load_dotenv()
 app = Flask(__name__)
@@ -20,6 +21,16 @@ db = SQLAlchemy(app)
 
 mapper_registry = registry()
 mapper_registry.configure()
+
+options_dic = {
+        "ai_model": "OpenAI",
+        "host1_name": "George",
+        "host2_name": "Doris",
+        "host1_voice": "ash",
+        "host2_voice": "shimmer",
+        "host1_mood": "cheerful and energetic",
+        "host2_mood": "calm and analytical"
+        }
 
 # Association Table
 podcasts_per_user = Table(
@@ -116,7 +127,10 @@ def welcome():
            # flash(
             #    'Please Wait, the AI Magic is preparing your Podcast.\nIt will be ready in a couple of minutes')
             try:
-                podcast_url = create_podcast(topic)
+                if options_dic["ai_model"] == "openAI":
+                    podcast_url = ai_create_podcast(topic, options_dic)
+                else:
+                    podcast_url = gemini_create_podcast(topic, options_dic)
                 new_podcast = Podcast(title=topic, podcast_url=podcast_url)
                 db.session.add(new_podcast)
                 db.session.commit()
@@ -214,7 +228,8 @@ def podcast():
 @app.route('/options')
 def options():
     if request.method == 'POST':
-        options = {
+        global options_dic
+        options_dic = {
         "ai_model": request.form['ai_model'],
         "host1_name": request.form['host1_name'],
         "host2_name": request.form['host2_name'],
@@ -223,7 +238,7 @@ def options():
         "host1_mood": request.form['host1_mood'],
         "host2_mood": request.form['host1_mood']
         }
-        return render_template('welcome.html', options=options)
+        return render_template('welcome.html')
     return render_template('options.html')
 
 
