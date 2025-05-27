@@ -106,6 +106,7 @@ def welcome():
     if results:
         podcast_ids_for_user = [row[1] for row in results]
     user_podcasts_list = []
+
     if request.method == 'POST':
         topic = request.form['topic']
         podcast = Podcast.query.filter_by(title=topic).first()
@@ -127,7 +128,7 @@ def welcome():
            # flash(
             #    'Please Wait, the AI Magic is preparing your Podcast.\nIt will be ready in a couple of minutes')
             try:
-                if options_dic["ai_model"] == "openAI":
+                if options_dic["ai_model"] == "OpenAI":
                     podcast_url = ai_create_podcast(topic, options_dic)
                 else:
                     podcast_url = gemini_create_podcast(topic, options_dic)
@@ -225,7 +226,7 @@ def podcast():
     return render_template('podcast.html', audio_file=f"audio/{request.args.get('audio_file')}")
 
 
-@app.route('/options')
+@app.route('/options', methods=['GET', 'POST'])
 def options():
     if request.method == 'POST':
         global options_dic
@@ -234,11 +235,11 @@ def options():
         "host1_name": request.form['host1_name'],
         "host2_name": request.form['host2_name'],
         "host1_voice": request.form['host1_voice'],
-        "host2_voice": request.form['host1_voice'],
+        "host2_voice": request.form['host2_voice'],
         "host1_mood": request.form['host1_mood'],
-        "host2_mood": request.form['host1_mood']
+        "host2_mood": request.form['host2_mood']
         }
-        return render_template('welcome.html')
+        return redirect(url_for('welcome'))
     return render_template('options.html')
 
 

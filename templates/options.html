@@ -34,8 +34,8 @@ document.getElementById('ai_model').addEventListener('change', function() {
 
   if (this.value === 'OpenAI') {
     dynamicInputDiv.innerHTML = `
-      <<select id="host1" name="host1"
-               class="form-control border-secondary text-black bg-transparent" aria-label="Select Host 1 Sex" aria-describedby="button-addon2">
+      <<select id="host1_voice" name="host1_voice"
+               class="form-control border-secondary text-black bg-transparent" aria-label="Select Host 1" aria-describedby="button-addon2">
           <option selected disabled>Please select Host 1 voice</option>
           <optgroup label="Male">
             <option>ash</option>
@@ -52,7 +52,7 @@ document.getElementById('ai_model').addEventListener('change', function() {
             <option>shimmer</option>
           </optgroup>
         </select>>
-      <<select id="host2" name="host2"
+      <<select id="host2_voice" name="host2_voice"
                class="form-control border-secondary text-black bg-transparent" aria-label="Select Host 1 Sex" aria-describedby="button-addon2">
           <option selected disabled>Please select Host 2 voice</option>
           <optgroup label="Male">
@@ -73,7 +73,7 @@ document.getElementById('ai_model').addEventListener('change', function() {
     `;
   } else if (this.value === 'Gemini') {
     dynamicInputDiv.innerHTML = `
-      <<select id="host1" name="host1"
+      <<select id="host1_voice" name="host1_voice"
                class="form-control border-secondary text-black bg-transparent" aria-label="Select Host 1 Sex" aria-describedby="button-addon2">
           <option selected disabled>Please select Host 1 voice</option>
           <optgroup label="Male">
@@ -111,7 +111,7 @@ document.getElementById('ai_model').addEventListener('change', function() {
             <option>Sulafat</option>
           </optgroup>
         </select>>
-      <<select id="host2" name="host2"
+      <<select id="host2_voice" name="host2_voice"
                class="form-control border-secondary text-black bg-transparent" aria-label="Select Host 1 Sex" aria-describedby="button-addon2">
           <option selected disabled>Please select Host 2 voice</option>
           <optgroup label="Male">

@@ -17,7 +17,7 @@ API_KEY = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=API_KEY)
 
 
-def gemini_create_podcast():
+def gemini_create_podcast(topic, options_dic):
    transcript = client.models.generate_content(
       model="gemini-2.0-flash",
       contents="""Generate a transcript around 500 words that reads
