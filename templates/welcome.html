@@ -9,6 +9,8 @@
     {%endif%}
     {%endwith%}
 <div class="loader" style="display: none;"></div>
+<div class="wait text-white" style="display: none;">Please Wait, the AI Magic is preparing your Podcast.<br>It will be ready in a couple of minutes
+</div>
 <h2 class="text-white font-weight-light mb-2 display-4">Hello, {{session['username']}}!</h2>
 <div class="mb-5 text-white">Enter your podcast topic below and be patient,<br>AI Magic will create your podcast in a couple of minutes.</div>
     <form id="topic_form"method="post"  class="site-block-subscribe">
@@ -18,17 +20,17 @@
         <button type="submit" class="btn btn-primary btn-sm py-3 px-4 small" id="button-addon2">Submit</button>
     </div>
 </form>
-  {% if user_podcasts_list %}
-  <a href="{{ url_for('previous_podcasts') }}">
-      <h3 class="text-white font-weight-light mb-2">or Listen to Your Previous Podcasts</h3></a>
-    <!--   {% for podcast in user_podcasts_list %}
-            <a href="{{ url_for('podcast', audio_file=podcast.podcast_url) }}">{{ podcast.title}}</a><br>
-        {% endfor %}
-        {% endif %} -->
+{% if user_podcasts_list %}
+    <a href="{{ url_for('previous_podcasts') }}">
+    <h3 class="text-white font-weight-light mb-2">or Listen to Your Previous Podcasts</h3></a>
+{% endif %}
+
 <script>
 document.getElementById('topic_form').addEventListener('submit', function(event) {
     // Show the loader
     document.querySelector('.loader').style.display = 'block';
+    document.querySelector('.wait').style.display = 'block';
   });
 </script>
+
 {% endblock %}

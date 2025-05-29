@@ -20,7 +20,7 @@
                     {% set podcast = user_podcasts_list[i] %}
                       <li><a href="{{ url_for('podcast', audio_file=podcast.podcast_url) }}">{{ podcast.title }}</a></li>
 {% endfor %}
-                      </ul>
+                  </ul>
               </div>
 {% else %}
     <div id="create">

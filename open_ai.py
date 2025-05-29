@@ -64,30 +64,38 @@ def ai_create_podcast(topic, options_dic):
     dialogue = generate_dialogue(topic, options_dic)
     print("Podcast Text:", dialogue.turns)
     print("Podcast generated. Converting to audio...")
-    for i in range(len(dialogue.turns)):
-        if dialogue.turns[i].speaker == options_dic['host1_name']:
-            voice = options_dic['host1_voice']
-            mood = options_dic['host1_mood']
-        else:
-            voice = options_dic['host2_voice']
-            mood = options_dic['host2_mood']
-        text_to_audio(dialogue.turns[i].text, voice, mood, f"podcast_line_{i}.mp3")
-        print(f"Audio saved to: podcast_line_{i}.mp3")
+    speaker_to_voice = {
+        options_dic['host1_name']: options_dic['host1_voice'],
+        options_dic['host2_name']: options_dic['host2_voice']
+    }
+    speaker_to_mood = {
+        options_dic['host1_name']: options_dic['host1_mood'],
+        options_dic['host2_name']: options_dic['host2_mood']
+    }
+    audio_segments = []
+    audio_segment = 0
+    for dialogue_turn in dialogue.turns:
+        audio_segment += 1
+        filename = f"{audio_segment}.mp3"
+        with client.audio.speech.with_streaming_response.create(
+                model="gpt-4o-mini-tts",
+                voice=speaker_to_voice[dialogue_turn.speaker],
+                input=dialogue_turn.text,
+                instructions=f"Speak in a {speaker_to_mood[dialogue_turn.speaker]} tone."
+        ) as response:
+            response.stream_to_file(filename)
+            audio_segments.append(filename)
 
-    # List mp3 files in the order we want to concatenate
-    mp3_files = []
-    for i in range(len(dialogue.turns)):
-        mp3_files.append(f"podcast_line_{i}.mp3")
-    # Start with the first file
-    # combined = AudioSegment.from_mp3(mp3_files[0])
+    print("Generated audio files:", audio_segments)
+
     combined = AudioSegment.from_mp3("static/audio/mind-intro.mp3")
-    # os.remove(mp3_files[0])
-    # Loop through and add the rest
-    for mp3_file in mp3_files:
-        combined += AudioSegment.from_mp3(mp3_file)
-        os.remove(mp3_file)
+    for filename in audio_segments:
+        combined += AudioSegment.from_mp3(filename)
+        os.remove(filename)
     combined += AudioSegment.from_mp3("static/audio/mind-intro.mp3")
     # Export the combined file
     podcast_path = os.path.join(os.getcwd(), "static/audio", f"{clean_path(topic)}.mp3")
     combined.export(podcast_path, format='mp3')
+
+    print("Final podcast exported as podcast_final.mp3")
     return f"{clean_path(topic)}.mp3"
