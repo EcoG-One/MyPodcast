@@ -49,6 +49,7 @@
                   <li><a href="{{ url_for('login') }}" >Login</a></li>
                   <li><a href="{{ url_for('register') }}" >Register</a></li>
                   <li><a href="{{ url_for('options') }}" >Options</a></li>
+                  <li><a href="{{ url_for('help') }}" >Help!</a></li>
                   <li><a href="{{ url_for('about') }}">About</a>
                 </ul>
             </nav>
@@ -77,9 +78,9 @@
 
           </div>
         </div>
-
       </div>
     </div>
+
 <footer class="site-footer text-center py-5 mt-auto">
       <div class="container">
         <div class="row">
@@ -210,7 +211,7 @@
   <script src="static/js/mediaelement-and-player.min.js"></script>
 
  <script>
-      const pagesToHideOn = ["/", "/register", "/login"];
+      const pagesToHideOn = ["/", "/register", "/login", "/options", "/help", "/about"];
       if (pagesToHideOn.includes(window.location.pathname)) {
         var element = document.getElementById("logout");
       if (element) {

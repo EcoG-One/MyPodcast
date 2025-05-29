@@ -125,8 +125,6 @@ def welcome():
             audio_url = f"audio/{podcast.podcast_url}"
             return render_template('podcast.html', audio_file=audio_url)
         else:
-           # flash(
-            #    'Please Wait, the AI Magic is preparing your Podcast.\nIt will be ready in a couple of minutes')
             try:
                 if options_dic["ai_model"] == "OpenAI":
                     podcast_url = ai_create_podcast(topic, options_dic)
@@ -241,6 +239,11 @@ def options():
         }
         return redirect(url_for('welcome'))
     return render_template('options.html')
+
+
+@app.route('/help')
+def help():
+    return render_template('help.html')
 
 
 @app.route('/about')

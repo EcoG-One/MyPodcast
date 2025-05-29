@@ -18,25 +18,36 @@ class DialogueTurn(BaseModel):
 class Dialogue(BaseModel):
     turns: List[DialogueTurn]
 
-def generate_dialogue(topic, options):
-    prompt = f"Create an one minute podcast dialogue between you and Doris discussing about {topic}."
+def generate_dialogue(topic, options_dic):
+    host_sex = []
+    for i in range(2):
+        print(i) # get sex from names
+        if options_dic[f'host{i+1}_voice'] in ["ash","echo","onyx","verse"]:
+            host_sex.append("male")
+        else:
+            host_sex.append("female")
+    prompt = (f"Generate a transcript around 300 words that reads like it was a "
+              f"podcast about {topic} by two hosts. The hosts names are "
+              f"{options_dic['host1_name']} and {options_dic['host2_name']}. "
+              f"{options_dic['host1_name']} is {host_sex[0]}, {options_dic['host1_mood']} "
+              f"and {options_dic['host2_name']} is {host_sex[0]}, {options_dic['host1_mood']}")
     completion = client.beta.chat.completions.parse(
         model="gpt-4o-mini",
         messages=[{"role": "developer", "content": f"You are creating a podcast dialogue between two hosts. "
-                   f"Host A is male {options['host1_mood']}. Host B is female, {options['host2_mood']}. "
-                   f"Host A is named {options['name']}. Host B is named {options['host2_name']}"},
+                   f"Host A is {host_sex[0]} {options_dic['host1_mood']}. Host B is {host_sex[1]}, {options_dic['host2_mood']}. "
+                   f"Host A is named {options_dic['host1_name']}. Host B is named {options_dic['host2_name']}"},
                   {"role": "user", "content": prompt}],
         response_format=Dialogue,
     )
     return completion.choices[0].message.parsed
 
 
-def text_to_audio(text, host, filename):
+def text_to_audio(text, voice, mood, filename):
     with client.audio.speech.with_streaming_response.create(
         model="gpt-4o-mini-tts",
-        voice=host,
+        voice=voice,
         input=text,
-        instructions="Speak in a cheerful and positive tone."
+        instructions=f"Speak in a {mood} tone."
     )as response:
         response.stream_to_file(filename)
 
@@ -48,17 +59,19 @@ def clean_path(path):
         return re.sub(r'[\/\0]', '', path)
 
 
-def ai_create_podcast(topic, options):
+def ai_create_podcast(topic, options_dic):
     print(f"Generating podcast for the topic: {topic}")
-    dialogue = generate_dialogue(topic, options)
+    dialogue = generate_dialogue(topic, options_dic)
     print("Podcast Text:", dialogue.turns)
     print("Podcast generated. Converting to audio...")
     for i in range(len(dialogue.turns)):
-        if dialogue.turns[i].speaker == "George":
-            host = "ash"
+        if dialogue.turns[i].speaker == options_dic['host1_name']:
+            voice = options_dic['host1_voice']
+            mood = options_dic['host1_mood']
         else:
-            host = "shimmer"
-        text_to_audio(dialogue.turns[i].text, host, f"podcast_line_{i}.mp3")
+            voice = options_dic['host2_voice']
+            mood = options_dic['host2_mood']
+        text_to_audio(dialogue.turns[i].text, voice, mood, f"podcast_line_{i}.mp3")
         print(f"Audio saved to: podcast_line_{i}.mp3")
 
     # List mp3 files in the order we want to concatenate
