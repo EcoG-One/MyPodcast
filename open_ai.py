@@ -5,6 +5,7 @@ import re
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from typing import List
+from tavili import tavili_answer
 
 load_dotenv()
 # Set up your OpenAI API key
@@ -19,26 +20,58 @@ class Dialogue(BaseModel):
     turns: List[DialogueTurn]
 
 def generate_dialogue(topic, options_dic):
-    host_sex = []
+    host_gender = []
     for i in range(2):
-        print(i) # get sex from names
+        print(i) # get gender from names
         if options_dic[f'host{i+1}_voice'] in ["ash","echo","onyx","verse"]:
-            host_sex.append("male")
+            host_gender.append("male")
         else:
-            host_sex.append("female")
-    prompt = (f"Generate a transcript around 300 words that reads like it was a "
-              f"podcast about {topic} by two hosts. The hosts names are "
-              f"{options_dic['host1_name']} and {options_dic['host2_name']}. "
-              f"{options_dic['host1_name']} is {host_sex[0]}, {options_dic['host1_mood']} "
-              f"and {options_dic['host2_name']} is {host_sex[0]}, {options_dic['host1_mood']}")
+            host_gender.append("female")
+    prompt = f"""
+    You are an expert podcast scriptwriter.
+
+    Write a conversational, engaging, and easy-to-follow podcast script (~320 words, ~2 minutes) for two hosts based on the latest news below and the given topic.
+
+    Hosts:
+    - Host A: {host_gender[0]}, mood: {options_dic['host1_mood']}, name: {options_dic['host1_name']}
+    - Host B: {host_gender[1]}, mood: {options_dic['host2_mood']}, name: {options_dic['host2_name']}
+
+    Script Format Example:
+    Host A: [Engaging hook, starts topic]
+    Host B: [Replies naturally, adds a twist]
+    Host A: [Continues with info or humor]
+    Host B: [Builds on the point]
+    ... (alternate for ~320 words)
+    End with a motivational or surprising takeaway.
+
+    Latest news: {tavili_answer(topic)}
+    Topic: "{topic}"
+
+    Instructions:
+    - Alternate naturally between hosts.
+    - Make the tone conversational, lively, and clear.
+    - Avoid jargon; keep it relatable.
+    - Show personality, add humor, and ensure a natural flow.
+    - Output only the script, with no extra text.
+    """
+
     completion = client.beta.chat.completions.parse(
         model="gpt-4o-mini",
-        messages=[{"role": "developer", "content": f"You are creating a podcast dialogue between two hosts. "
-                   f"Host A is {host_sex[0]} {options_dic['host1_mood']}. Host B is {host_sex[1]}, {options_dic['host2_mood']}. "
-                   f"Host A is named {options_dic['host1_name']}. Host B is named {options_dic['host2_name']}"},
-                  {"role": "user", "content": prompt}],
+        messages=[
+            {
+                "role": "developer",
+                "content": "You are an expert podcast scriptwriter."
+            },
+            {
+                "role": "user",
+                "content": prompt}],
         response_format=Dialogue,
     )
+    # Token usage breakdown
+    print("\n--- Token Usage ---")
+    print(f"Prompt tokens: {completion.usage.prompt_tokens}")
+    print(f"Completion tokens: {completion.usage.completion_tokens}")
+    print(f"Total tokens: {completion.usage.total_tokens}")
     return completion.choices[0].message.parsed
 
 

@@ -211,13 +211,13 @@
   <script src="static/js/mediaelement-and-player.min.js"></script>
 
  <script>
-      const pagesToHideOn = ["/", "/register", "/login", "/options", "/help", "/about"];
-      if (pagesToHideOn.includes(window.location.pathname)) {
-        var element = document.getElementById("logout");
-      if (element) {
-        element.style.display = "none";
-      }
-    }
+    var userInSession = {{ user_in_session|tojson }}; // Use tojson for safety
+    var element = document.getElementById("logout");
+    if (userInSession) {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
 </script>
 
   <script>

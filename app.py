@@ -1,7 +1,7 @@
 import os
 from flask import Flask, flash, render_template, request, redirect, url_for, send_from_directory, session
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Table, Column, Integer, insert, ForeignKey, select
+from sqlalchemy import Column, func, Integer, insert, ForeignKey, select, Table
 from sqlalchemy.orm import relationship, registry
 from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -28,8 +28,8 @@ options_dic = {
         "host2_name": "Doris",
         "host1_voice": "ash",
         "host2_voice": "shimmer",
-        "host1_mood": "cheerful and energetic",
-        "host2_mood": "calm and analytical"
+        "host1_mood": "analytical but witty",
+        "host2_mood": "lighthearted and curious"
         }
 
 # Association Table
@@ -87,7 +87,7 @@ def home():
     """
     if 'username' in session:
         return redirect(url_for('welcome'))
-    return render_template('home.html')
+    return render_template('home.html', user_in_session=False)
 
 
 @app.route('/welcome', methods=['GET', 'POST'])
@@ -109,7 +109,7 @@ def welcome():
 
     if request.method == 'POST':
         topic = request.form['topic']
-        podcast = Podcast.query.filter_by(title=topic).first()
+        podcast = Podcast.query.filter(func.lower(Podcast.title) == func.lower(topic)).first()
 
         if podcast:
             podcast_id = podcast.id
@@ -123,7 +123,7 @@ def welcome():
                 db.session.execute(stmt)
                 db.session.commit()
             audio_url = f"audio/{podcast.podcast_url}"
-            return render_template('podcast.html', audio_file=audio_url)
+            return render_template('podcast.html', user_in_session=True, audio_file=audio_url)
         else:
             try:
                 if options_dic["ai_model"] == "OpenAI":
@@ -139,7 +139,7 @@ def welcome():
                 db.session.commit()
              #   session['_flashes'].clear()
                 audio_url = f"audio/{podcast_url}"
-                return render_template('podcast.html', audio_file=audio_url)
+                return render_template('podcast.html', user_in_session=True, audio_file=audio_url)
             except Exception as e:
                 db.session.rollback()
                 flash(str(e),'error')
@@ -147,7 +147,7 @@ def welcome():
     if request.method == 'GET':
         if podcast_ids_for_user:
             [user_podcasts_list.append(Podcast.query.filter_by(id=i).first()) for i in podcast_ids_for_user]
-    return render_template('welcome.html',
+    return render_template('welcome.html', user_in_session=True,
                                    user_podcasts_list=user_podcasts_list)
 
 
@@ -156,6 +156,7 @@ def welcome():
 def previous_podcasts():
     user_podcasts_list = []
     if session:
+        user_in_session = True
         user = User.query.filter_by(username=session['username']).first()
         user_id = user.id
         stmt = select(podcasts_per_user).where(
@@ -169,7 +170,8 @@ def previous_podcasts():
              in podcast_ids_for_user]
     else:
         flash("Please Log in First")
-    return render_template('previous_podcasts.html', user_podcasts_list=user_podcasts_list)
+        user_in_session = False
+    return render_template('previous_podcasts.html', user_in_session=user_in_session, user_podcasts_list=user_podcasts_list)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -194,7 +196,7 @@ def register():
             db.session.rollback()
             flash('Username already exists. Please choose a different one.', 'error')
 
-    return render_template('register.html')
+    return render_template('register.html', user_in_session=False)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -216,12 +218,12 @@ def login():
         else:
             flash('Invalid username or password.', 'error')
 
-    return render_template('login.html')
+    return render_template('login.html', user_in_session = False)
 
 
 @app.route('/podcast')
 def podcast():
-    return render_template('podcast.html', audio_file=f"audio/{request.args.get('audio_file')}")
+    return render_template('podcast.html', user_in_session = True, audio_file=f"audio/{request.args.get('audio_file')}")
 
 
 @app.route('/options', methods=['GET', 'POST'])
@@ -238,17 +240,29 @@ def options():
         "host2_mood": request.form['host2_mood']
         }
         return redirect(url_for('welcome'))
-    return render_template('options.html')
+    if 'username' in session:
+        user_in_session = True
+    else:
+        user_in_session = False
+    return render_template('options.html', user_in_session=user_in_session)
 
 
 @app.route('/help')
 def help():
-    return render_template('help.html')
+    if 'username' in session:
+        user_in_session = True
+    else:
+        user_in_session = False
+    return render_template('help.html', user_in_session=user_in_session)
 
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    if 'username' in session:
+        user_in_session = True
+    else:
+        user_in_session = False
+    return render_template('about.html', user_in_session=user_in_session)
 
 
 @app.route('/logout')

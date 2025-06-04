@@ -3,7 +3,7 @@
 {% block content %}
 
 <h2 class="text-white font-weight-light mb-2 display-4">Options</h2>
-
+<div style="max-height:90vh; overflow-y:auto">
 <form method="post" class="site-block-subscribe">
     <div class="form-group mb-3">
         <select id="ai_model" name="ai_model"
@@ -26,7 +26,7 @@
       <button type="submit" class="btn btn-primary btn-sm py-3 px-4 small" id="button-addon2">Save</button>
     </div>
 </form>
-
+</div>
 <script>
 document.getElementById('ai_model').addEventListener('change', function() {
   const dynamicInputDiv = document.getElementById('dynamic-input');
@@ -40,13 +40,13 @@ document.getElementById('ai_model').addEventListener('change', function() {
           <optgroup label="Male">
             <option>ash</option>
             <option>echo</option>
+            <option>fable</option>
             <option>onyx</option>
             <option>verse</option>
           </optgroup>
           <optgroup label="Female">
             <option>ballad</option>
             <option>coral</option>
-            <option>fable</option>
             <option>nova</option>
             <option>sage</option>
             <option>shimmer</option>
@@ -58,13 +58,13 @@ document.getElementById('ai_model').addEventListener('change', function() {
           <optgroup label="Male">
             <option>ash</option>
             <option>echo</option>
+            <option>fable</option>
             <option>onyx</option>
             <option>verse</option>
           </optgroup>
           <optgroup label="Female">
             <option>ballad</option>
             <option>coral</option>
-            <option>fable</option>
             <option>nova</option>
             <option>sage</option>
             <option>shimmer</option>

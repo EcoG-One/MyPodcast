@@ -10,7 +10,8 @@
     {%endif%}
     {%endwith%}
 <h2 class="text-white font-weight-light mb-2 display-4">Listen to Your Podcast:</h2>
-<div class="player">
+<div style="max-height:90vh; overflow-y:auto">
+<div>
     <audio id="myPodcast" controls autoplay style="max-width: 100%">
       <source src="{{ url_for('static', filename= audio_file) }}" type="audio/mpeg">
       Your browser does not support the audio element.
@@ -21,7 +22,7 @@
   Your Podcast has finished playing!<br>Go Back for more Podcasts<br><a href="{{ url_for('home') }}" class="btn btn-primary btn-sm py-3 px-4 small" type="button">Back</a>
 </div>
 </div>
-
+</div>
 <script>
   const audio = document.getElementById('myPodcast');
   const messageDiv = document.getElementById('audioMessage');
