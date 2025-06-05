@@ -21,8 +21,7 @@ class Dialogue(BaseModel):
 
 def generate_dialogue(topic, options_dic):
     host_gender = []
-    for i in range(2):
-        print(i) # get gender from names
+    for i in range(2): # get gender from names
         if options_dic[f'host{i+1}_voice'] in ["ash","echo","onyx","verse"]:
             host_gender.append("male")
         else:
@@ -67,12 +66,17 @@ def generate_dialogue(topic, options_dic):
                 "content": prompt}],
         response_format=Dialogue,
     )
+    dialogue = completion.choices[0].message
     # Token usage breakdown
     print("\n--- Token Usage ---")
     print(f"Prompt tokens: {completion.usage.prompt_tokens}")
     print(f"Completion tokens: {completion.usage.completion_tokens}")
     print(f"Total tokens: {completion.usage.total_tokens}")
-    return completion.choices[0].message.parsed
+    # If the model refuses to respond
+    if (dialogue.refusal):
+        raise Exception(dialogue.refusal)
+    else:
+        return dialogue.parsed
 
 
 def text_to_audio(text, voice, mood, filename):
