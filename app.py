@@ -1,7 +1,8 @@
 import os
-from flask import Flask, flash, render_template, request, redirect, url_for, send_from_directory, session
+from flask import (Flask, flash, render_template, request, redirect, url_for,
+                   session)
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, func, Integer, insert, ForeignKey, select, Table
+from sqlalchemy import Column, insert, select, Table
 from sqlalchemy.orm import relationship, registry
 from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -22,6 +23,7 @@ db = SQLAlchemy(app)
 mapper_registry = registry()
 mapper_registry.configure()
 
+# Default settings
 options_dic = {
         "ai_model": "OpenAI",
         "host1_name": "George",
@@ -94,10 +96,13 @@ def home():
 def welcome():
     """
     Route: welcome
-    Inputs the Podcast topic
-    :return:
+    Inputs the Podcast topic, creates the Podcast and adds it to the
+    database
+    :return: Rendered HTML template for the Podcast player page or the
+    previous Podcasts page
     """
     user = User.query.filter_by(username=session['username']).first()
+    # Get previous user Podcasts, if any:
     user_id = user.id
     stmt = select(podcasts_per_user).where(
         podcasts_per_user.c.user_id == user_id)
@@ -109,23 +114,28 @@ def welcome():
 
     if request.method == 'POST':
         topic = request.form['topic']
-        podcast = Podcast.query.filter(func.lower(Podcast.title) == func.lower(topic)).first()
+        #Check if Podcast is already in database:
+        podcast = Podcast.query.filter(func.lower(Podcast.title) ==
+                                       func.lower(topic)).first()
 
-        if podcast:
+        if podcast:   # if Podcast topic is already in Podcasts database
             podcast_id = podcast.id
-            stmt = select(podcasts_per_user).where(
-                podcasts_per_user.c.user_id == user_id)
-            results = db.session.execute(stmt).fetchall()
-            podcast_ids_for_user = [row[1] for row in results]
+       #     stmt = select(podcasts_per_user).where(
+       #         podcasts_per_user.c.user_id == user_id)
+       #     results = db.session.execute(stmt).fetchall()
+       #     podcast_ids_for_user = [row[1] for row in results]
+            # Add Podcast to User Podcasts table, if not already
             if not podcast.id in podcast_ids_for_user:
                 stmt = insert(podcasts_per_user).values(user_id=user_id,
                                                         podcast_id=podcast_id)
                 db.session.execute(stmt)
                 db.session.commit()
+
             audio_url = f"audio/{podcast.podcast_url}"
-            return render_template('podcast.html', user_in_session=True, audio_file=audio_url)
-        else:
-            try:
+            return render_template('podcast.html',
+                                   user_in_session=True, audio_file=audio_url)
+        else:      # if Podcast topic is not in Podcasts database
+            try:   # Create Podcast
                 if options_dic["ai_model"] == "OpenAI":
                     podcast_url = ai_create_podcast(topic, options_dic)
                 else:
@@ -134,19 +144,20 @@ def welcome():
                 db.session.add(new_podcast)
                 db.session.commit()
                 stmt = insert(podcasts_per_user).values(user_id=user_id,
-                                                        podcast_id=new_podcast.id)
+                                                    podcast_id=new_podcast.id)
                 db.session.execute(stmt)
                 db.session.commit()
-             #   session['_flashes'].clear()
                 audio_url = f"audio/{podcast_url}"
-                return render_template('podcast.html', user_in_session=True, audio_file=audio_url)
+                return render_template('podcast.html',
+                                    user_in_session=True, audio_file=audio_url)
             except Exception as e:
                 db.session.rollback()
                 flash(str(e),'error')
 
     if request.method == 'GET':
         if podcast_ids_for_user:
-            [user_podcasts_list.append(Podcast.query.filter_by(id=i).first()) for i in podcast_ids_for_user]
+            [user_podcasts_list.append(Podcast.query.filter_by(id=i).first())
+             for i in podcast_ids_for_user]
     return render_template('welcome.html', user_in_session=True,
                                    user_podcasts_list=user_podcasts_list)
 
@@ -154,6 +165,11 @@ def welcome():
 
 @app.route('/previous_podcasts')
 def previous_podcasts():
+    """
+    Route: previous_podcasts
+    Displays a list of the previous user Podcasts
+    :return: Rendered HTML template for the page that displays the list
+    """
     user_podcasts_list = []
     if session:
         user_in_session = True
@@ -166,12 +182,13 @@ def previous_podcasts():
         if results:
             podcast_ids_for_user = [row[1] for row in results]
         if podcast_ids_for_user:
-            [user_podcasts_list.append(Podcast.query.filter_by(id=i).first()) for i
-             in podcast_ids_for_user]
+            [user_podcasts_list.append(Podcast.query.filter_by(id=i).first())
+             for i in podcast_ids_for_user]
     else:
         flash("Please Log in First")
         user_in_session = False
-    return render_template('previous_podcasts.html', user_in_session=user_in_session, user_podcasts_list=user_podcasts_list)
+    return render_template('previous_podcasts.html',
+        user_in_session=user_in_session, user_podcasts_list=user_podcasts_list)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -185,7 +202,8 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        hashed_password = generate_password_hash(password, method='scrypt', salt_length=16)
+        hashed_password = generate_password_hash(password, method='scrypt',
+                                                 salt_length=16)
         try:
             new_user = User(username=username, password=hashed_password)
             db.session.add(new_user)
@@ -194,9 +212,11 @@ def register():
             return redirect(url_for('login'))
         except Exception as e:
             db.session.rollback()
-            flash('Username already exists. Please choose a different one.', 'error')
+            flash(
+            'Username already exists. Please choose a different one.', 'error')
 
-    return render_template('register.html', user_in_session=False)
+    return render_template('register.html',
+                           user_in_session=False)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -218,16 +238,28 @@ def login():
         else:
             flash('Invalid username or password.', 'error')
 
-    return render_template('login.html', user_in_session = False)
+    return render_template('login.html',
+                           user_in_session = False)
 
 
 @app.route('/podcast')
 def podcast():
-    return render_template('podcast.html', user_in_session = True, audio_file=f"audio/{request.args.get('audio_file')}")
+    """
+    route: podcast
+    Plays the Podcast
+    :return: Rendered HTML template for audio player page
+    """
+    return render_template('podcast.html', user_in_session = True,
+                           audio_file=f"audio/{request.args.get('audio_file')}")
 
 
 @app.route('/options', methods=['GET', 'POST'])
 def options():
+    """
+    route: options
+    Changes the default Podcast settings
+    :return: Rendered HTML template for the options form
+    """
     if request.method == 'POST':
         global options_dic
         options_dic = {
@@ -249,6 +281,11 @@ def options():
 
 @app.route('/help')
 def help():
+    """
+    route: help
+    Displays the app instructions
+    :return: Rendered HTML template for the Help page
+    """
     if 'username' in session:
         user_in_session = True
     else:
@@ -258,6 +295,10 @@ def help():
 
 @app.route('/about')
 def about():
+    """
+    route: about
+    :return: Rendered HTML template for the About page
+    """
     if 'username' in session:
         user_in_session = True
     else:
