@@ -7,11 +7,11 @@
 <form method="post" class="site-block-subscribe">
     <div class="form-group mb-3">
         <select id="ai_model" name="ai_model"
-      class="form-control border-secondary text-black bg-transparent"
+      class="form-control border-secondary text-white bg-transparent"
       aria-label="Select AI provider" aria-describedby="button-addon2">
       <option selected disabled>Please select AI provider</option>
-      <option>OpenAI</option>
-      <option>Gemini</option>
+      <option class="text-black">OpenAI</option>
+      <option class="text-black">Gemini</option>
     </select>
     <!-- Placeholder for dynamic input -->
     <div id="dynamic-input"></div>
@@ -19,9 +19,9 @@
            class="form-control border-secondary text-white bg-transparent" placeholder="Enter Host 1 Name" aria-label="Enter Host 1 Name" aria-describedby="button-addon2">
     <input type="text" id="host2_name" name="host2_name" maxlength="40" required
            class="form-control border-secondary text-white bg-transparent" placeholder="Enter Host 2 Name" aria-label="Enter Host 2 Name" aria-describedby="button-addon2">
-    <input type="text" id="host1_mood" name="host1_mood" maxlength="40" required
+    <input type="text" id="host1_mood" name="host1_mood" maxlength="80" required
            class="form-control border-secondary text-white bg-transparent" placeholder="Enter Host 1 Mood" aria-label="Enter Host 1 Mood" aria-describedby="button-addon2">
-    <input type="text" id="host2_mood" name="host2_mood" maxlength="40" required
+    <input type="text" id="host2_mood" name="host2_mood" maxlength="80" required
            class="form-control border-secondary text-white bg-transparent" placeholder="Enter Host 2 Mood" aria-label="Enter Host 2 Mood" aria-describedby="button-addon2">
       <button type="submit" class="btn btn-primary btn-sm py-3 px-4 small" id="button-addon2">Save</button>
     </div>
@@ -35,118 +35,118 @@ document.getElementById('ai_model').addEventListener('change', function() {
   if (this.value === 'OpenAI') {
     dynamicInputDiv.innerHTML = `
       <<select id="host1_voice" name="host1_voice"
-               class="form-control border-secondary text-black bg-transparent" aria-label="Select Host 1" aria-describedby="button-addon2">
+               class="form-control border-secondary text-white bg-transparent" aria-label="Select Host 1" aria-describedby="button-addon2">
           <option selected disabled>Please select Host 1 voice</option>
-          <optgroup label="Male">
-            <option>ash</option>
-            <option>echo</option>
-            <option>fable</option>
-            <option>onyx</option>
-            <option>verse</option>
+          <optgroup class="text-black" label="Male">
+            <option class="text-black">ash</option>
+            <option class="text-black">echo</option>
+            <option class="text-black">fable</option>
+            <option class="text-black">onyx</option>
+            <option class="text-black">verse</option>
           </optgroup>
-          <optgroup label="Female">
-            <option>ballad</option>
-            <option>coral</option>
-            <option>nova</option>
-            <option>sage</option>
-            <option>shimmer</option>
+          <optgroup class="text-black" label="Female">
+            <option class="text-black">ballad</option>
+            <option class="text-black">coral</option>
+            <option class="text-black">nova</option>
+            <option class="text-black">sage</option>
+            <option class="text-black">shimmer</option>
           </optgroup>
         </select>>
       <<select id="host2_voice" name="host2_voice"
-               class="form-control border-secondary text-black bg-transparent" aria-label="Select Host 1 Sex" aria-describedby="button-addon2">
+               class="form-control border-secondary text-white bg-transparent" aria-label="Select Host 1 Sex" aria-describedby="button-addon2">
           <option selected disabled>Please select Host 2 voice</option>
-          <optgroup label="Male">
-            <option>ash</option>
-            <option>echo</option>
-            <option>fable</option>
-            <option>onyx</option>
-            <option>verse</option>
+          <optgroup class="text-black" label="Male">
+            <option class="text-black">ash</option>
+            <option class="text-black">echo</option>
+            <option class="text-black">fable</option>
+            <option class="text-black">onyx</option>
+            <option class="text-black">verse</option>
           </optgroup>
-          <optgroup label="Female">
-            <option>ballad</option>
-            <option>coral</option>
-            <option>nova</option>
-            <option>sage</option>
-            <option>shimmer</option>
+          <optgroup class="text-black" label="Female">
+            <option class="text-black">ballad</option>
+            <option class="text-black">coral</option>
+            <option class="text-black">nova</option>
+            <option class="text-black">sage</option>
+            <option class="text-black">shimmer</option>
           </optgroup>
         </select>>
     `;
   } else if (this.value === 'Gemini') {
     dynamicInputDiv.innerHTML = `
       <<select id="host1_voice" name="host1_voice"
-               class="form-control border-secondary text-black bg-transparent" aria-label="Select Host 1 Sex" aria-describedby="button-addon2">
+               class="form-control border-secondary text-white bg-transparent" aria-label="Select Host 1 Sex" aria-describedby="button-addon2">
           <option selected disabled>Please select Host 1 voice</option>
-          <optgroup label="Male">
-            <option>Zephyr</option>
-            <option>Puck</option>
-            <option>Charon</option>
-            <option>Fenrir</option>
-            <option>Orus</option>
-            <option>Enceladus</option>
-            <option>Iapetus</option>
-            <option>Umbriel</option>
-            <option>Algieba</option>
-            <option>Algenib</option>
-            <option>Rasalgethi</option>
-            <option>Alnilam</option>
-            <option>Schedar</option>
-            <option>Achird</option>
-            <option>Zubenelgenubi</option>
-            <option>Sadachbia</option>
-            <option>Sadaltager</option>
+          <optgroup class="text-black" label="Male">
+            <option class="text-black">Zephyr</option>
+            <option class="text-black">Puck</option>
+            <option class="text-black">Charon</option>
+            <option class="text-black">Fenrir</option>
+            <option class="text-black">Orus</option>
+            <option class="text-black">Enceladus</option>
+            <option class="text-black">Iapetus</option>
+            <option class="text-black">Umbriel</option>
+            <option class="text-black">Algieba</option>
+            <option class="text-black">Algenib</option>
+            <option class="text-black">Rasalgethi</option>
+            <option class="text-black">Alnilam</option>
+            <option class="text-black">Schedar</option>
+            <option class="text-black">Achird</option>
+            <option class="text-black">Zubenelgenubi</option>
+            <option class="text-black">Sadachbia</option>
+            <option class="text-black">Sadaltager</option>
           </optgroup>
-          <optgroup label="Female">
-            <option>Kore</option>
-            <option>Leda</option>
-            <option>Aoede</option>
-            <option>Callirrhoe</option>
-            <option>Autonoe</option>
-            <option>Despina</option>
-            <option>Erinome</option>
-            <option>Laomedeia</option>
-            <option>Achernar</option>
-            <option>Gacrux</option>
-            <option>Pulcherrima</option>
-            <option>Vindemiatrix</option>
-            <option>Sulafat</option>
+          <optgroup class="text-black" label="Female">
+            <option class="text-black">Kore</option>
+            <option class="text-black">Leda</option>
+            <option class="text-black">Aoede</option>
+            <option class="text-black">Callirrhoe</option>
+            <option class="text-black">Autonoe</option>
+            <option class="text-black">Despina</option>
+            <option class="text-black">Erinome</option>
+            <option class="text-black">Laomedeia</option>
+            <option class="text-black">Achernar</option>
+            <option class="text-black">Gacrux</option>
+            <option class="text-black">Pulcherrima</option>
+            <option class="text-black">Vindemiatrix</option>
+            <option class="text-black">Sulafat</option>
           </optgroup>
         </select>>
       <<select id="host2_voice" name="host2_voice"
-               class="form-control border-secondary text-black bg-transparent" aria-label="Select Host 1 Sex" aria-describedby="button-addon2">
+               class="form-control border-secondary text-white bg-transparent" aria-label="Select Host 1 Sex" aria-describedby="button-addon2">
           <option selected disabled>Please select Host 2 voice</option>
-          <optgroup label="Male">
-            <option>Zephyr</option>
-            <option>Puck</option>
-            <option>Charon</option>
-            <option>Fenrir</option>
-            <option>Orus</option>
-            <option>Enceladus</option>
-            <option>Iapetus</option>
-            <option>Umbriel</option>
-            <option>Algieba</option>
-            <option>Algenib</option>
-            <option>Rasalgethi</option>
-            <option>Alnilam</option>
-            <option>Schedar</option>
-            <option>Achird</option>
-            <option>Zubenelgenubi</option>
-            <option>Sadachbia</option>
-            <option>Sadaltager</option>
+          <optgroup class="text-black" label="Male">
+            <option class="text-black">Zephyr</option>
+            <option class="text-black">Puck</option>
+            <option class="text-black">Charon</option>
+            <option class="text-black">Fenrir</option>
+            <option class="text-black">Orus</option>
+            <option class="text-black">Enceladus</option>
+            <option class="text-black">Iapetus</option>
+            <option class="text-black">Umbriel</option>
+            <option class="text-black">Algieba</option>
+            <option class="text-black">Algenib</option>
+            <option class="text-black">Rasalgethi</option>
+            <option class="text-black">Alnilam</option>
+            <option class="text-black">Schedar</option>
+            <option class="text-black">Achird</option>
+            <option class="text-black">Zubenelgenubi</option>
+            <option class="text-black">Sadachbia</option>
+            <option class="text-black">Sadaltager</option>
           </optgroup>
-          <optgroup label="Female">
-            <option>Kore</option>
-            <option>Leda</option>
-            <option>Aoede</option>
-            <option>Callirrhoe</option>
-            <option>Autonoe</option>
-            <option>Despina</option>
-            <option>Erinome</option>
-            <option>Laomedeia</option>
-            <option>Achernar</option>
-            <option>Gacrux</option>
-            <option>Pulcherrima</option>
-            <option>Vindemiatrix</option>
-            <option>Sulafat</option>
+          <optgroup class="text-black" label="Female">
+            <option class="text-black">Kore</option>
+            <option class="text-black">Leda</option>
+            <option class="text-black">Aoede</option>
+            <option class="text-black">Callirrhoe</option>
+            <option class="text-black">Autonoe</option>
+            <option class="text-black">Despina</option>
+            <option class="text-black">Erinome</option>
+            <option class="text-black">Laomedeia</option>
+            <option class="text-black">Achernar</option>
+            <option class="text-black">Gacrux</option>
+            <option class="text-black">Pulcherrima</option>
+            <option class="text-black">Vindemiatrix</option>
+            <option class="text-black">Sulafat</option>
           </optgroup>
         </select>>
     `;

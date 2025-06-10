@@ -24,7 +24,7 @@ mapper_registry = registry()
 mapper_registry.configure()
 
 # Default settings
-options_dic = {
+default_options = {
         "ai_model": "OpenAI",
         "host1_name": "George",
         "host2_name": "Doris",
@@ -120,10 +120,6 @@ def welcome():
 
         if podcast:   # if Podcast topic is already in Podcasts database
             podcast_id = podcast.id
-       #     stmt = select(podcasts_per_user).where(
-       #         podcasts_per_user.c.user_id == user_id)
-       #     results = db.session.execute(stmt).fetchall()
-       #     podcast_ids_for_user = [row[1] for row in results]
             # Add Podcast to User Podcasts table, if not already
             if not podcast.id in podcast_ids_for_user:
                 stmt = insert(podcasts_per_user).values(user_id=user_id,
@@ -135,11 +131,12 @@ def welcome():
             return render_template('podcast.html',
                                    user_in_session=True, audio_file=audio_url)
         else:      # if Podcast topic is not in Podcasts database
+            options = session.get('options', default_options)
             try:   # Create Podcast
-                if options_dic["ai_model"] == "OpenAI":
-                    podcast_url = ai_create_podcast(topic, options_dic)
+                if options["ai_model"] == "OpenAI":
+                    podcast_url = ai_create_podcast(topic, options)
                 else:
-                    podcast_url = gemini_create_podcast(topic, options_dic)
+                    podcast_url = gemini_create_podcast(topic, options)
                 new_podcast = Podcast(title=topic, podcast_url=podcast_url)
                 db.session.add(new_podcast)
                 db.session.commit()
@@ -233,6 +230,7 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
             session['username'] = username
+            session['options'] = default_options.copy()
             flash('Login successful!', 'success')
             return redirect(url_for('home'))
         else:
@@ -261,8 +259,8 @@ def options():
     :return: Rendered HTML template for the options form
     """
     if request.method == 'POST':
-        global options_dic
-        options_dic = {
+        options = session.get('options', default_options.copy())
+        options = {
         "ai_model": request.form['ai_model'],
         "host1_name": request.form['host1_name'],
         "host2_name": request.form['host2_name'],
@@ -271,6 +269,7 @@ def options():
         "host1_mood": request.form['host1_mood'],
         "host2_mood": request.form['host2_mood']
         }
+        session['options'] = options
         return redirect(url_for('welcome'))
     if 'username' in session:
         user_in_session = True
