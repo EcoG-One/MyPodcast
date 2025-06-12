@@ -101,7 +101,12 @@ def welcome():
     :return: Rendered HTML template for the Podcast player page or the
     previous Podcasts page
     """
-    user = User.query.filter_by(username=session['username']).first()
+    if session:
+        user = User.query.filter_by(username=session['username']).first()
+    else:
+        return render_template('home.html', user_in_session=False)
+    if not user:
+        return render_template('home.html', user_in_session=False)
     # Get previous user Podcasts, if any:
     user_id = user.id
     stmt = select(podcasts_per_user).where(
