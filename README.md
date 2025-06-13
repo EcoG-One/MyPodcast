@@ -21,6 +21,13 @@ The app comes with a Help page, where, in addition to the instructions for use, 
 ## Demo
 https://mypodcast-5v87.onrender.com
 
+![Home Page](https://github.com/user-attachments/assets/42da646c-8726-4f8f-8f56-3836673b73bc)
+
+![Options page](https://github.com/user-attachments/assets/900acb86-f41a-4d57-8539-c4437ba8e6df)
+
+![Podcast Playing](https://github.com/user-attachments/assets/088f85f1-9295-4443-96ec-1835e26cdf4d)
+
+
 ## 🌟 Features
 
 - **Innovating AI Technology**: Besides the usual AI technology, the app implements cutting edge technologies, like structured data, TTS, AI news aggregation etc.
