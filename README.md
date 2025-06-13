@@ -35,8 +35,8 @@ https://mypodcast-5v87.onrender.com
 - **Diverse AI APIs**: User can choose among different AI APIs
 - **News Update**: All podcasts are up to date thanks to content aggregation from a wide range of reputable news sources.
 - **Natural human voices**: Podcast hosts have remarkably natural voices, thanks to the newest (still experimental) AI TTS technology
-- **Engaging Design**: Enjoy a visually appealing layout and design.
-- **User-Friendly Interface**: Easy-to-use platform for setting preferences and receiving your newspaper.
+- **Engaging Responsive Design**: Enjoy a visually appealing layout and design on computers, smart phones, tablets, smart TVs.
+- **User-Friendly Interface**: Easy-to-use platform for setting preferences and creating podcast.
 
 ## 🛠️ Technologies
 
