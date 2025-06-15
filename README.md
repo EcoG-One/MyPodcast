@@ -18,9 +18,6 @@ By selecting the Artificial Intelligence platform, the choice of voices that the
 The app comes with a Help page, where, in addition to the instructions for use, the user can listen to the various voices and their preset moods so that they can choose.
 
 
-## Demo
-https://mypodcast-5v87.onrender.com
-
 ![Home Page](https://github.com/user-attachments/assets/42da646c-8726-4f8f-8f56-3836673b73bc)
 
 ![Options page](https://github.com/user-attachments/assets/900acb86-f41a-4d57-8539-c4437ba8e6df)
