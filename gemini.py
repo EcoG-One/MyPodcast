@@ -43,6 +43,13 @@ def gemini_create_podcast(topic, options_dic):
          host_gender.append("female")
       else:
          host_gender.append("male")
+   hosts_check = ''
+   if options_dic['host1_name'] in topic:
+      hosts_check = (f"- {options_dic['host1_name']} in {topic} and "
+                     f"Host A are not the same person.")
+   if options_dic['host2_name'] in topic:
+      hosts_check = (f"- {options_dic['host2_name']} in {topic} and "
+                     f"Host B are not the same person.")
    response_client = (client.models.generate_content(
       model="gemini-2.0-flash",
       contents=f"""
@@ -81,6 +88,7 @@ def gemini_create_podcast(topic, options_dic):
                 and named {options_dic['host1_name']}.
                 Host B is {host_gender[1]}, {options_dic['host2_mood']}, 
                 and named {options_dic['host2_name']}.
+                {hosts_check}
                 """
 ))
    transcript = response_client.text

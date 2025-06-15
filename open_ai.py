@@ -20,6 +20,7 @@ class DialogueTurn(BaseModel):
 class Dialogue(BaseModel):
     turns: List[DialogueTurn]
 
+
 def generate_dialogue(topic, options_dic):
     """
     Generate the Podcast text, using OpenAI
@@ -33,6 +34,13 @@ def generate_dialogue(topic, options_dic):
             host_gender.append("male")
         else:
             host_gender.append("female")
+    hosts_check = ''
+    if options_dic['host1_name'] in topic:
+        hosts_check = (f"- {options_dic['host1_name']} in {topic} and "
+                       f"Host A are not the same person.")
+    if options_dic['host2_name'] in topic:
+        hosts_check = (f"- {options_dic['host2_name']} in {topic} and "
+                       f"Host B are not the same person.")
     prompt = f"""
     You are an expert podcast scriptwriter.
 
@@ -63,6 +71,7 @@ def generate_dialogue(topic, options_dic):
     - Avoid jargon; keep it relatable.
     - Show personality, add humor, and ensure a natural flow.
     - Output only the script, with no extra text.
+    {hosts_check}
     """
 
     completion = client.beta.chat.completions.parse(
@@ -144,18 +153,14 @@ def ai_create_podcast(topic, options_dic):
     }
     audio_segments = []
     audio_segment = 0
-    for dialogue_turn in dialogue.turns:
+    for turn in dialogue.turns:
         audio_segment += 1
+        text = turn.text
+        voice=speaker_to_voice[turn.speaker]
+        mood = speaker_to_mood[turn.speaker]
         filename = f"{audio_segment}.mp3"
-        with client.audio.speech.with_streaming_response.create(
-                model="gpt-4o-mini-tts",
-                voice=speaker_to_voice[dialogue_turn.speaker],
-                input=dialogue_turn.text,
-                instructions=f"Speak in a "
-                             f"{speaker_to_mood[dialogue_turn.speaker]} tone."
-        ) as response:
-            response.stream_to_file(filename)
-            audio_segments.append(filename)
+        text_to_audio(text, voice, mood, filename)
+        audio_segments.append(filename)
 
     print("Generated audio files:", audio_segments)
 
